@@ -1,0 +1,51 @@
+server:
+  servlet:
+    context-path: /mk-services
+    encoding:
+      force-response: true
+      charset: utf-8
+
+
+spring:
+  #development
+  config:
+    activate:
+      on-profile: development
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.DB2Dialect
+  hibernate:
+    ddl-auto: none
+  datasource:
+    jndi-name:
+
+  #swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+springdoc:
+  swagger-ui:
+  path: /docs
+  show-actuator: true
+  display-request-duration: true
+  filter: true
+
+# loggin config file by profile
+log4j:
+  configuration:
+    path: log4j-dev.properties
+
+#Ficheiro de configuracao da SC
+sc:
+  config:
+    file: "/home/www/config/sc_config.properties"
+
+#customom properties ex local url
+app:
+  baseUrl: /mk-formularios
+
+secundary:
+  dbs:
+    jndi: jdbc/usrlogon,jdbc/dbtoynet
