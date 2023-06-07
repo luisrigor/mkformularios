@@ -28,8 +28,8 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
                 .paths(PathSelectors.any())
                 .build()
-                //.securitySchemes(Arrays.asList(apiKey()))
-                //.securityContexts(Arrays.asList(securityContext()))
+                .securitySchemes(Arrays.asList(apiKey()))
+                .securityContexts(Arrays.asList(securityContext()))
                 .apiInfo(apiEndPointsInfo());
     }
     private ApiInfo apiEndPointsInfo() {
