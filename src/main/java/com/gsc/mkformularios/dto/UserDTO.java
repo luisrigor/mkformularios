@@ -1,4 +1,4 @@
-package com.gsc.tvcmanager.dto;
+package com.gsc.mkformularios.dto;
 
 
 import com.gsc.mkformularios.constants.AppProfile;

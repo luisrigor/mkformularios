@@ -1,10 +1,10 @@
 package com.gsc.mkformularios.controller;
 
 
+import com.gsc.mkformularios.dto.UserDTO;
 import com.gsc.mkformularios.security.JwtAuthenticationToken;
 import com.gsc.mkformularios.security.TokenProvider;
 import com.gsc.mkformularios.security.UserPrincipal;
-import com.gsc.tvcmanager.dto.UserDTO;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
