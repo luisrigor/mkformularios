@@ -19,7 +19,7 @@ spring:
   hibernate:
     ddl-auto: none
   datasource:
-    jndi-name:
+    jndi-name: jdbc/toyxtaps
 
   #swagger
   mvc:
