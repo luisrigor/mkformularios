@@ -82,7 +82,7 @@ public class DbConfigLocal {
     LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, @Qualifier("msDatasource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.gsc.mkformularios.model.entity")
+                .packages("com.gsc.mkformularios.model.toyota.entity")
                 .persistenceUnit("msPersistenceUnit")
                 .properties(getHibernateProperties())
                 .build();

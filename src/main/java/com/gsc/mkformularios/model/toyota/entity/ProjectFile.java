@@ -1,8 +1,9 @@
-package com.gsc.mkformularios.model.entity;
+package com.gsc.mkformularios.model.toyota.entity;
 
+import com.gsc.mkformularios.constants.ProjectFileStatus;
+import com.gsc.mkformularios.constants.ProjectFileType;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -14,29 +15,34 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-public class ServiceLogin implements Serializable {
+public class ProjectFile implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NotEmpty
-    @Size(max = 50)
+    @Size(max = 255)
     private String name;
     @NotEmpty
-    @Size(max = 50)
-    private String value;
+    @Size(max = 255)
+    private String path;
     @NotEmpty
-    @Size(max = 100)
-    private String description;
+    @Size(max = 255)
+    private String checksum;
+    @NotEmpty
+    @Size(max = 255)
+    private String originalName;
     @NotNull
-    private Boolean uploadFile;
+    @Enumerated(EnumType.STRING)
+    private ProjectFileType type;
     @NotNull
-    private Boolean cleanupProjects;
+    @Enumerated(EnumType.STRING)
+    private ProjectFileStatus status;
     @NotNull
-    private Boolean downloadProjectFiles;
+    @Column(name = "active")
+    private Boolean active;
     @NotEmpty
     @Size(max = 50)
     private String createdBy;
@@ -48,6 +54,9 @@ public class ServiceLogin implements Serializable {
     @Column(name = "dt_changed")
     private LocalDateTime changed;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_project")
+    private Project project;
 
 
 }

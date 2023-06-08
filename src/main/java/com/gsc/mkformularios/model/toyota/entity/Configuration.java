@@ -1,4 +1,4 @@
-package com.gsc.mkformularios.model.entity;
+package com.gsc.mkformularios.model.toyota.entity;
 
 import lombok.*;
 

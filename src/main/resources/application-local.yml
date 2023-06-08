@@ -43,10 +43,13 @@ log4j:
 #Ficheiro de configuracao da SC
 sc:
   config:
-    file: "C:/Users/Luis Parra/OneDrive - Rigor/Documentos/REPOSITORIOS/Proyectos GITHUB/mkformularios/src/main/resources/sc_config.properties"
+    file: ""
 
 #customom properties ex local url
 app:
   baseUrl: /mk-formularios
-
+  server:
+    type: 10
+  auth:
+    token-name: accessToken
 
