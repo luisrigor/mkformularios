@@ -23,6 +23,6 @@ public class LoggingConfig {
     public void configureLogging() throws IOException {
         ClassPathResource log4jResource = new ClassPathResource(log4jConfigPath);
         PropertyConfigurator.configure(log4jResource.getInputStream());
-        AS400ConnectionPooling.setData(SERVER_TYPE);
+//        AS400ConnectionPooling.setData(SERVER_TYPE);
     }
 }

@@ -45,6 +45,15 @@ sc:
 #customom properties ex local url
 app:
   baseUrl: /mk-formularios
+  server:
+    type: 10
+  auth:
+    token-name: accessToken
+  datasource:
+    first:
+      jndi: jdbc/toyxtaps
+    second:
+      jndi: jdbc/lexxtaps
 
 secundary:
   dbs:

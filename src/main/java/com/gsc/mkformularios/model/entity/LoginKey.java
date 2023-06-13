@@ -1,6 +1,8 @@
-package com.gsc.mkformularios.model.toyota.entity;
+package com.gsc.mkformularios.model.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -13,10 +15,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
-public class Configuration implements Serializable {
+@Table(name = "login_key")
+public class LoginKey implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,14 +25,11 @@ public class Configuration implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotEmpty
-    @Size(max = 50)
-    private String name;
-    @NotEmpty
-    @Size(max = 50)
-    private String value;
-    @NotEmpty
     @Size(max = 100)
-    private String description;
+    @Column(name = "key_value")
+    private String keyValue;
+    @NotNull
+    private Boolean enabled;
     @NotEmpty
     @Size(max = 50)
     @Column(name = "created_by")
@@ -39,10 +37,6 @@ public class Configuration implements Serializable {
     @NotNull
     @Column(name = "dt_created")
     private LocalDateTime created;
-    @Size(max = 50)
-    @Column(name = "changed_by")
-    private String changedBy;
-    @Column(name = "dt_changed")
-    private LocalDateTime changed;
+
 
 }

@@ -1,6 +1,6 @@
 package com.gsc.mkformularios.repository;
 
-import com.gsc.mkformularios.model.toyota.entity.Configuration;
+import com.gsc.mkformularios.model.entity.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ConfigurationRepository extends JpaRepository<Configuration, Long> {

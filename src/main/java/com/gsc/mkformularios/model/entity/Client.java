@@ -1,4 +1,4 @@
-package com.gsc.mkformularios.model.toyota.entity;
+package com.gsc.mkformularios.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;

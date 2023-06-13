@@ -3,7 +3,7 @@ package com.gsc.mkformularios.security;
 
 import com.gsc.mkformularios.config.environment.EnvironmentConfig;
 import com.gsc.mkformularios.constants.AppProfile;
-import com.gsc.mkformularios.model.toyota.entity.Client;
+import com.gsc.mkformularios.model.entity.Client;
 import com.gsc.mkformularios.repository.ClientRepository;
 import com.gsc.mkformularios.repository.ConfigurationRepository;
 import com.gsc.scgscwsauthentication.response.AuthenticationExtraResponse;

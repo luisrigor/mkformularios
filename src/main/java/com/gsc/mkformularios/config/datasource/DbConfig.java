@@ -1,16 +1,12 @@
-package com.gsc.mkformularios.config;
+package com.gsc.mkformularios.config.datasource;
 
-import com.sc.commons.dbconnection.ServerJDBCConnection;
-import com.sc.commons.initialization.SCGlobalPreferences;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -31,9 +27,13 @@ import java.util.Map;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "msEntityManagerFactory",
         transactionManagerRef = "msTransactionManager",
-        basePackages = {"com.gsc.mkformularios.repository"}
+        basePackages = {"com.gsc.mkformularios"}
 )
+@RequiredArgsConstructor
+@DependsOn("dataSourceRouting")
 public class DbConfig {
+
+    private final DataSourceRouting dataSourceRouting;
 
     private static final Logger log = LoggerFactory.getLogger(DbConfig.class);
 
@@ -51,30 +51,30 @@ public class DbConfig {
 
     @PostConstruct
     private void init() {
-        SCGlobalPreferences.setResources(scConfigFile);
-        jndis.stream().forEach(jndiName -> {
-            try {
-                InitialContext ctx = new InitialContext();
-                ServerJDBCConnection conn = ServerJDBCConnection.getInstance();
-                conn.setDataSource((DataSource) ctx.lookup(jndiName), jndiName);
-                log.info("Datasource initialized successfully: {}", jndiName);
-            } catch (NamingException e) {
-                log.error("Error initializing datasource ({}): {}", jndiName, e.getMessage());
-            }
-        });
+//        SCGlobalPreferences.setResources(scConfigFile);
+//        jndis.stream().forEach(jndiName -> {
+//            try {
+//                InitialContext ctx = new InitialContext();
+//                ServerJDBCConnection conn = ServerJDBCConnection.getInstance();
+//                conn.setDataSource((DataSource) ctx.lookup(jndiName), jndiName);
+//                log.info("Datasource initialized successfully: {}", jndiName);
+//            } catch (NamingException e) {
+//                log.error("Error initializing datasource ({}): {}", jndiName, e.getMessage());
+//            }
+//        });
     }
     @Primary
     @Bean(name="msDatasource",
     destroyMethod = "")
-    DataSource dataSource() throws NamingException {
-        return (DataSource) new InitialContext().lookup(jndi);
+    DataSource dataSource() {
+        return dataSourceRouting;
     }
     @Primary
     @Bean(name = "msEntityManagerFactory")
     LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, @Qualifier("msDatasource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.gsc.mkformularios.model.toyota.entity")
+                .packages("com.gsc.mkformularios.model.entity")
                 .persistenceUnit("msPersistenceUnit")
                 .properties(getHibernateProperties())
                 .build();

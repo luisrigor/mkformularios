@@ -2,8 +2,8 @@ package com.gsc.mkformularios.security;
 
 import com.gsc.mkformularios.constants.AppProfile;
 import com.gsc.mkformularios.exceptions.AuthTokenException;
-import com.gsc.mkformularios.model.toyota.entity.LoginKey;
-import com.gsc.mkformularios.model.toyota.entity.ServiceLogin;
+import com.gsc.mkformularios.model.entity.LoginKey;
+import com.gsc.mkformularios.model.entity.ServiceLogin;
 import com.gsc.mkformularios.repository.ConfigurationRepository;
 import com.gsc.mkformularios.repository.LoginKeyRepository;
 import com.gsc.mkformularios.repository.ServiceLoginRepository;
