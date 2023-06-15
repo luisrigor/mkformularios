@@ -44,7 +44,7 @@ sc:
 
 #customom properties ex local url
 app:
-  baseUrl: /mk-formularios
+  baseUrl: /formularios
   server:
     type: 10
   auth:
