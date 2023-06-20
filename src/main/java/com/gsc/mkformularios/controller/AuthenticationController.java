@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Api(value = "",tags = "MK FORMULARIOS - Authentication")
+@Api(value = "", tags = "MK FORMULARIOS - Authentication")
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
 
     private final TokenProvider tokenProvider;
 
     @PostMapping("/sign-in")
-    public UserDTO createAuthenticationToken(@RequestHeader("loginToken") String loginToken){
+    public UserDTO createAuthenticationToken(@RequestHeader("loginToken") String loginToken) {
 
         Authentication authentication = authenticationManager.authenticate(new JwtAuthenticationToken(loginToken));
         String token = tokenProvider.createToken(authentication);

@@ -12,7 +12,7 @@ public enum ProjectFileType {
 
     private final String mimeType;
 
-    private ProjectFileType(String mimeType) {
+    ProjectFileType(String mimeType) {
         this.mimeType = mimeType;
     }
 

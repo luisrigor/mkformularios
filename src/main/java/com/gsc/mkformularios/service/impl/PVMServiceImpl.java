@@ -25,7 +25,7 @@ public class PVMServiceImpl implements PVMService {
     private final PVMCarmodelRepository pvmCarmodelRepository;
     private final PVMMonthlyReportRepository pvmMonthlyReportRepository;
 
-    public void setDataSourceContext(Long client){
+    public void setDataSourceContext(Long client) {
         if (client == 2L)
             dbContext.setBranchContext(DbClient.DB_LEXUS);
     }

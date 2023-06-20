@@ -17,6 +17,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.StringUtils;
+
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -70,7 +71,7 @@ public class JwtAuthenticationManager implements AuthenticationManager {
 
         ExtranetUser user = authenticationExtra.getUser();
 
-        final String userId = user.getIdUser() + "||" + user.getLogin() + "||" +user.getMail();
+        final String userId = user.getIdUser() + "||" + user.getLogin() + "||" + user.getMail();
         final Set<AppProfile> roles = getRoles(user);
 
         if (roles.isEmpty()) {

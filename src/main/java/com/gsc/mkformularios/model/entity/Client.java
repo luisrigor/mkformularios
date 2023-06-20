@@ -2,6 +2,7 @@ package com.gsc.mkformularios.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -43,7 +44,6 @@ public class Client implements Serializable {
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_client")
     private Set<Project> projects;
-
 
 
 }

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @Log4j
-@RequestMapping("${app.baseUrl}"+PVMEnpoints.PVM_BASE)
-@Api(value = "",tags = "PVM")
+@RequestMapping("${app.baseUrl}" + PVMEnpoints.PVM_BASE)
+@Api(value = "", tags = "PVM")
 @RestController
 @CrossOrigin("*")
 public class PVMController {
@@ -27,8 +27,8 @@ public class PVMController {
     public ResponseEntity<PVMDetailDTO> getPVMDetail(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                      @RequestParam int idPVM) {
         log.info("fetching PVMDetail with id " + idPVM);
-        log.info("Client id " +userPrincipal.getClientId());
+        log.info("Client id " + userPrincipal.getClientId());
         PVMDetailDTO pvmDetail = PVMService.getPVMDetail(idPVM, userPrincipal);
-        return  ResponseEntity.status(HttpStatus.OK).body(pvmDetail);
+        return ResponseEntity.status(HttpStatus.OK).body(pvmDetail);
     }
 }

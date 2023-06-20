@@ -25,7 +25,7 @@ public enum AppProfile {
 
     private final Integer id;
 
-    private AppProfile(Integer id) {
+    AppProfile(Integer id) {
         this.id = id;
     }
 

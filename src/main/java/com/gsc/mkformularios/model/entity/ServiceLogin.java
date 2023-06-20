@@ -49,5 +49,4 @@ public class ServiceLogin implements Serializable {
     private LocalDateTime changed;
 
 
-
 }

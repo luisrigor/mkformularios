@@ -3,6 +3,7 @@ package com.gsc.mkformularios.model.entity;
 import com.gsc.mkformularios.constants.ProjectStatusType;
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -68,7 +69,6 @@ public class Project implements Serializable {
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_project")
     private Set<ProjectFile> projectFiles;
-
 
 
 }

@@ -4,6 +4,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.util.Assert;
+
 import java.util.Collection;
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
@@ -14,9 +15,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
      * This factory method can be safely used by any code that wishes to create a unauthenticated <code>JwtAuthenticationToken</code>.
      *
      * @param principal
-     *
      * @return UsernamePasswordAuthenticationToken with false isAuthenticated() result
-     *
      * @since 5.7
      */
     public static JwtAuthenticationToken unauthenticated(Object principal) {
@@ -27,9 +26,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
      * This factory method can be safely used by any code that wishes to create a authenticated <code>JwtAuthenticationToken</code>.
      *
      * @param principal
-     *
      * @return UsernamePasswordAuthenticationToken with true isAuthenticated() result
-     *
      * @since 5.7
      */
     public static JwtAuthenticationToken authenticated(Object principal, Collection<? extends GrantedAuthority> authorities) {
@@ -41,7 +38,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     /**
      * This constructor can be safely used by any code that wishes to create a <code>JwtAuthenticationToken</code>, as the {@link #isAuthenticated()}
      * will return <code>false</code>.
-     *
      */
     public JwtAuthenticationToken(Object principal) {
         super(null);

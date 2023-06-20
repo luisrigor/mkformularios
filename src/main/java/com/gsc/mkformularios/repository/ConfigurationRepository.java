@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ConfigurationRepository extends JpaRepository<Configuration, Long> {
 
-    final String LOGIN_ENABLED = "loginEnabled";
-    final String KEY_CREATION = "keyCreationStatus";
-    final String TOKEN_EXPIRATION_MILISECONDS = "tokenExpirationMiliseconds";
+    String LOGIN_ENABLED = "loginEnabled";
+    String KEY_CREATION = "keyCreationStatus";
+    String TOKEN_EXPIRATION_MILISECONDS = "tokenExpirationMiliseconds";
 
     Configuration findByName(String name);
 
