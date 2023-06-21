@@ -7,5 +7,8 @@ import com.sc.commons.user.GSCUser;
 
 public interface PVMService {
     PVMDetailDTO getPVMDetail(int idPVM, UserPrincipal userPrincipal);
+
     Boolean newPVM(GSCUser oGSCUser, int subDealer);
+
+    void providePVMToDealer(UserPrincipal userPrincipal,String cancelReasons,int idPVM);
 }
