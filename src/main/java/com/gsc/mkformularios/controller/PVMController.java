@@ -31,4 +31,5 @@ public class PVMController {
         PVMDetailDTO pvmDetail = PVMService.getPVMDetail(idPVM, userPrincipal);
         return ResponseEntity.status(HttpStatus.OK).body(pvmDetail);
     }
+
 }
