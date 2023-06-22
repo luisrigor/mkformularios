@@ -2,6 +2,7 @@ package com.gsc.mkformularios.service.impl;
 
 import com.gsc.mkformularios.config.datasource.DbClient;
 import com.gsc.mkformularios.config.datasource.DbContext;
+import com.gsc.mkformularios.dto.GoToModelDTO;
 import com.gsc.mkformularios.dto.ModelDTO;
 import com.gsc.mkformularios.model.entity.PVMCarModelYearForecast;
 import com.gsc.mkformularios.model.entity.PVMCarmodel;
@@ -32,18 +33,22 @@ public class ModelServiceImpl implements ModelService {
             dbContext.setBranchContext(DbClient.DB_LEXUS);
     }
 
-    public void goToModel(UserPrincipal userPrincipal, boolean isDetail, int idModel,String year) {
+    public GoToModelDTO goToModel(UserPrincipal userPrincipal, boolean isDetail, int idModel,String year) {
         try {
             this.setDataSourceContext(userPrincipal.getClientId());
+            List<PVMCarModelYearForecast> hmForecasts = null;
             List<PVMCarmodel> car = pvmCarmodelRepository.getCar();
             if(isDetail){
                 Optional<PVMCarmodel> oPVMCarModel = pvmCarmodelRepository.findById(idModel);
                 log.debug("Year: "+year);
                 if(String.valueOf(userPrincipal.getClientId()).equals(Dealer.OID_NET_TOYOTA)){
-                    List<PVMCarModelYearForecast> hmForecasts =pvmCarmodelYearForecastRepository.findAllById(idModel);
+                    hmForecasts =pvmCarmodelYearForecastRepository.findAllById(idModel);
                 }
             }
+            // TODO falta agregar el objeto de la linea 42 en el DTO
+            return GoToModelDTO.builder().car(car).forecast(hmForecasts).build();
         } catch (Exception e) {
+            //TODO Agregar SCErrorException
             //Agregar SCErrorException
             log.error("Erro ao consultar detalhe do modelo"+ e.getMessage());
         }
@@ -56,8 +61,8 @@ public class ModelServiceImpl implements ModelService {
             if (idModel > 0) {
                 PVMCarmodel oPVMCarmodel = pvmCarmodelRepository.findById(idModel).get();
             }else {
-                PVMCarmodel carModel =  saveCarmodel(model);
-                idModel > 0 ? carModel.save(/*agregar getUserStamp*/) :  pvmCarmodelRepository.save(carModel);
+                PVMCarmodel carModel = saveCarmodel(model);
+                idModel > 0 ? carModel.save(/*agregar getUserStamp*/) : pvmCarmodelRepository.save(carModel);
             }
         }catch (Exception e){
             //Agregar SCErrorException
