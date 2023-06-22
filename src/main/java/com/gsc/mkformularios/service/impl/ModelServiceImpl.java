@@ -14,8 +14,6 @@ import com.rg.dealer.Dealer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
-
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +64,7 @@ public class ModelServiceImpl implements ModelService {
             if (idModel > 0) {
                 PVMCarmodel oPVMCarmodel = pvmCarmodelRepository.findById(idModel).get();
             }else {
-                PVMCarmodel carModel = saveCarmodel(model);
+                PVMCarmodel carModel = saveCarModel(model);
                 idModel > 0 ? carModel.save(/*agregar getUserStamp*/) : pvmCarmodelRepository.save(carModel);
             }
         }catch (Exception e){
@@ -76,7 +74,7 @@ public class ModelServiceImpl implements ModelService {
         //agregar de return un boolean o DTO
     }
 
-    public PVMCarmodel saveCarmodel(ModelDTO model){
+    public PVMCarmodel saveCarModel(ModelDTO model){
         PVMCarmodel  oPVMCarmodel = new PVMCarmodel();
         oPVMCarmodel.setName(model.getModel());
         oPVMCarmodel.setActive("S");
