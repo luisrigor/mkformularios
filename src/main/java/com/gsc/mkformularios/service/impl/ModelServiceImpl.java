@@ -37,20 +37,25 @@ public class ModelServiceImpl implements ModelService {
         try {
             this.setDataSourceContext(userPrincipal.getClientId());
             List<PVMCarModelYearForecast> hmForecasts = null;
+            Optional<PVMCarmodel> oPVMCarModel = null;
             List<PVMCarmodel> car = pvmCarmodelRepository.getCar();
             if(isDetail){
-                Optional<PVMCarmodel> oPVMCarModel = pvmCarmodelRepository.findById(idModel);
+                oPVMCarModel = pvmCarmodelRepository.findById(idModel);
                 log.debug("Year: "+year);
                 if(String.valueOf(userPrincipal.getClientId()).equals(Dealer.OID_NET_TOYOTA)){
                     hmForecasts =pvmCarmodelYearForecastRepository.findAllById(idModel);
                 }
             }
-            // TODO falta agregar el objeto de la linea 42 en el DTO
-            return GoToModelDTO.builder().car(car).forecast(hmForecasts).build();
+            return GoToModelDTO
+                    .builder()
+                    .car(car)
+                    .forecast(hmForecasts)
+                    .carModel(oPVMCarModel.orElse(null))
+                    .build();
         } catch (Exception e) {
             //TODO Agregar SCErrorException
-            //Agregar SCErrorException
             log.error("Erro ao consultar detalhe do modelo"+ e.getMessage());
+            throw new RuntimeException("Erro ao consultar detalhe do");
         }
     }
 

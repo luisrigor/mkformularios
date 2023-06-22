@@ -42,7 +42,7 @@ public class PlanServiceImpl implements PlanService {
             return PlanDTO.builder().car(car).forecast(aLForecasts).build();
         } catch (Exception e) {
             log.error("goToEditPlan,Erro ao consultar aplica��o PVM" + e.getMessage());
+            throw new RuntimeException("Erro ao consultar aplica��o PVM");
         }
-        return null;
     }
 }
