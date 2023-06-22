@@ -1,8 +1,8 @@
 package com.gsc.mkformularios.service;
 
+import com.gsc.mkformularios.dto.PlanDTO;
 import com.gsc.mkformularios.security.UserPrincipal;
 
 public interface PlanService {
-
-    void goToEditPlan(UserPrincipal userPrincipal, int year);
+    PlanDTO goToEditPlan(UserPrincipal userPrincipal, int year);
 }

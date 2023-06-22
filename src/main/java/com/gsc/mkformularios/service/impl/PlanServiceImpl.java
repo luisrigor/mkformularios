@@ -2,6 +2,7 @@ package com.gsc.mkformularios.service.impl;
 
 import com.gsc.mkformularios.config.datasource.DbClient;
 import com.gsc.mkformularios.config.datasource.DbContext;
+import com.gsc.mkformularios.dto.PlanDTO;
 import com.gsc.mkformularios.model.entity.PVMCarModelYearForecast;
 import com.gsc.mkformularios.model.entity.PVMCarmodel;
 import com.gsc.mkformularios.repository.PVMCarModelYearForecastRepository;
@@ -30,16 +31,18 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public void goToEditPlan(UserPrincipal userPrincipal, int year) {
-        // TODO agregar DTO
+    public PlanDTO goToEditPlan(UserPrincipal userPrincipal, int year) {
         this.setDataSourceContext(userPrincipal.getClientId());
-        try{
+        try {
             List<PVMCarmodel> car = pvmCarmodelRepository.getCar();
-            if(String.valueOf(userPrincipal.getClientId()).equals(Dealer.OID_NET_TOYOTA)){
-                List<PVMCarModelYearForecast> aLForecasts = pvmCarmodelYearForecastRepository.findAllYear(year);
+            List<PVMCarModelYearForecast> aLForecasts = null;
+            if (String.valueOf(userPrincipal.getClientId()).equals(Dealer.OID_NET_TOYOTA)) {
+                aLForecasts = pvmCarmodelYearForecastRepository.findAllYear(year);
             }
-        }catch (Exception e){
-            log.error("goToEditPlan,Erro ao consultar aplica��o PVM"+ e.getMessage());
+            return PlanDTO.builder().car(car).forecast(aLForecasts).build();
+        } catch (Exception e) {
+            log.error("goToEditPlan,Erro ao consultar aplica��o PVM" + e.getMessage());
         }
+        return null;
     }
 }
