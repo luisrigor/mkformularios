@@ -1,7 +1,7 @@
 package com.gsc.mkformularios.sample.data.provider;
 
 import com.gsc.mkformularios.constants.AppProfile;
-import com.gsc.mkformularios.model.entity.LoginKey;
+import com.gsc.mkformularios.model.toyota.entity.LoginKey;
 import com.gsc.mkformularios.security.UserPrincipal;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -42,7 +42,7 @@ public class SecurityData {
 
     public String generateNewToken() {
         Set<AppProfile> roles = new HashSet<>();
-        roles.add(AppProfile.APPROVAL_MANAGER);
+        roles.add(AppProfile.DEALER);
         UserPrincipal userPrincipal = new UserPrincipal("137||tcap1@tpo||tiago.fernandes@parceiro.rigorcg.pt",
                 roles, 1L);
         Date now = new Date();
@@ -67,8 +67,8 @@ public class SecurityData {
 
     public UserPrincipal getUserPrincipal() {
         Set<AppProfile> roles = new HashSet<>();
-        roles.add(AppProfile.APPROVAL_MANAGER);
+        roles.add(AppProfile.DEALER);
         return new UserPrincipal("137||tcap1@tpo||tiago.fernandes@parceiro.rigorcg.pt",
-                roles,1L);
+                roles,33L);
     }
 }

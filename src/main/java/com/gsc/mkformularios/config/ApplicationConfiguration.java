@@ -25,10 +25,19 @@ public class ApplicationConfiguration {
     }
 
     public static String getMailFrom(String oidNet) {
+//        if (oidNet.equals(Dealer.OID_NET_TOYOTA))
+//            return Mail.MAIL_ADDRESS_EXTRANET_TOYOTA;
+//        else if (oidNet.equals(Dealer.OID_NET_LEXUS))
+//            return Mail.MAIL_ADDRESS_EXTRANET_LEXUS;
+
+        return null;
+    }
+
+    public static String getViewDealers(String oidNet) {
         if (oidNet.equals(Dealer.OID_NET_TOYOTA))
-            return Mail.MAIL_ADDRESS_EXTRANET_TOYOTA;
+            return "TOYOTA_RETAILER";
         else if (oidNet.equals(Dealer.OID_NET_LEXUS))
-            return Mail.MAIL_ADDRESS_EXTRANET_LEXUS;
+            return "LEXUS_RETAILER";
 
         return null;
     }

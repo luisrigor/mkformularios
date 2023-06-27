@@ -1,14 +1,21 @@
 package com.gsc.mkformularios.service;
 
 import com.gsc.mkformularios.dto.PVMDetailDTO;
+import com.gsc.mkformularios.dto.PVMGetDTO;
+import com.gsc.mkformularios.dto.PVMRequestDTO;
+import com.gsc.mkformularios.dto.ReportDetailRequestDto;
 import com.gsc.mkformularios.security.UserPrincipal;
 import com.sc.commons.exceptions.SCErrorException;
 import com.sc.commons.user.GSCUser;
 
-public interface PVMService {
-    PVMDetailDTO getPVMDetail(int idPVM, UserPrincipal userPrincipal);
+import java.util.List;
 
-    Boolean newPVM(GSCUser oGSCUser, int subDealer);
+public interface PVMService {
+    PVMGetDTO getPVM(PVMRequestDTO pvmRequestDTO, UserPrincipal userPrincipal);
+    PVMDetailDTO getPVMDetail(int idPVM, UserPrincipal userPrincipal);
+    Boolean newPVM(UserPrincipal userPrincipal, int subDealer);
 
     void providePVMToDealer(UserPrincipal userPrincipal,String cancelReasons,int idPVM);
+
+    void saveReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS);
 }

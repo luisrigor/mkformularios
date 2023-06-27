@@ -3,9 +3,9 @@ package com.gsc.mkformularios.security;
 
 import com.gsc.mkformularios.config.environment.EnvironmentConfig;
 import com.gsc.mkformularios.constants.AppProfile;
-import com.gsc.mkformularios.model.entity.Client;
-import com.gsc.mkformularios.repository.ClientRepository;
-import com.gsc.mkformularios.repository.ConfigurationRepository;
+import com.gsc.mkformularios.model.toyota.entity.Client;
+import com.gsc.mkformularios.repository.toyota.ClientRepository;
+import com.gsc.mkformularios.repository.toyota.ConfigurationRepository;
 import com.gsc.scgscwsauthentication.response.AuthenticationExtraResponse;
 import com.gsc.scgscwsauthentication.response.ExtranetUser;
 import com.gsc.scgscwsauthentication.response.PairIdName;
@@ -47,6 +47,8 @@ public class JwtAuthenticationManager implements AuthenticationManager {
         }
 
         String loginToken = authentication.getPrincipal() != null ? authentication.getPrincipal().toString() : null;
+        String tokenParts[] = loginToken.split("\\|\\|\\|");
+        loginToken = tokenParts[1];
 
         if (!StringUtils.hasText(loginToken)) {
             throw new BadCredentialsException("Invalid login token");
@@ -63,7 +65,7 @@ public class JwtAuthenticationManager implements AuthenticationManager {
             throw new BadCredentialsException("Invalid client");
         }
 
-        AuthenticationExtraResponse authenticationExtra = environmentConfig.getAuthenticationInvoker().authenticationExtra(parts[0], parts[1], client.get().getApplicationId().intValue());
+        AuthenticationExtraResponse authenticationExtra = environmentConfig.getAuthenticationInvoker().authenticationExtra(parts[0], parts[1], Integer.parseInt(tokenParts[0]));
 
         if (!authenticationExtra.getCode().equals("0") || authenticationExtra.getUser() == null) {
             throw new BadCredentialsException("Bad credentials");
@@ -77,7 +79,10 @@ public class JwtAuthenticationManager implements AuthenticationManager {
         if (roles.isEmpty()) {
             throw new AuthenticationServiceException("No permissions");
         }
-        return JwtAuthenticationToken.authenticated(new UserPrincipal(userId, roles, CLIENT_ID), Collections.emptyList());
+
+        UserPrincipal authUser = new UserPrincipal(userId, roles, Long.parseLong(tokenParts[0]));
+        authUser.setOidDealerParent(user.getDealerParent().getObjectId());
+        return JwtAuthenticationToken.authenticated(authUser, Collections.emptyList());
     }
 
     private Set<AppProfile> getRoles(ExtranetUser user) {
@@ -85,10 +90,12 @@ public class JwtAuthenticationManager implements AuthenticationManager {
         Set<Integer> profiles = getProfiles(user);
 
         for (Integer profileId : profiles) {
-            if (AppProfile.APPROVAL_MANAGER.getId().equals(profileId)) {
-                roles.add(AppProfile.APPROVAL_MANAGER);
-            } else if (AppProfile.PRODUCT_MANAGER.getId().equals(profileId)) {
-                roles.add(AppProfile.PRODUCT_MANAGER);
+            if (AppProfile.DEALER.getIdToyota().equals(profileId) || AppProfile.DEALER.getIdLexus().equals(profileId)) {
+                roles.add(AppProfile.DEALER);
+            } else if (AppProfile.TCAP.getIdToyota().equals(profileId) || AppProfile.TCAP.getIdLexus().equals(profileId)) {
+                roles.add(AppProfile.TCAP);
+            } else if (AppProfile.CA.getIdToyota().equals(profileId) || AppProfile.CA.getIdLexus().equals(profileId)) {
+                roles.add(AppProfile.CA);
             }
         }
         return roles;

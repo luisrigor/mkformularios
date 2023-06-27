@@ -1,35 +1,42 @@
 package com.gsc.mkformularios.constants;
 
+import lombok.Getter;
+
+import static com.gsc.mkformularios.constants.DATAConstants.*;
+
+@Getter
 public enum AppProfile {
 
     /**
      * Gestor de Homologação.
      */
-    APPROVAL_MANAGER(535),
+    DEALER(ID_PRF_TOYOTA_DEALER, ID_PRF_LEXUS_DEALER),
     /**
      * Gestor de Produto.
      */
-    PRODUCT_MANAGER(534),
+    TCAP(ID_PRF_TOYOTA_TCAP, ID_PRF_LEXUS_TCAP),
     /**
      * Can upload files.
      */
-    UPLOAD_FILE(-1),
+    CA(ID_PRF_TOYOTA_CA, -1);
     /**
      * Can cleanup projects.
      */
-    CLEANUP_PROJECTS(-1),
+//    CLEANUP_PROJECTS(-1),
     /**
      * Can download project files.
      */
-    DOWNLOAD_PROJECT_FILES(-1);
+//    DOWNLOAD_PROJECT_FILES(-1);
 
-    private final Integer id;
+    private final Integer idToyota;
+    private final Integer idLexus;
 
-    AppProfile(Integer id) {
-        this.id = id;
-    }
+//    AppProfile(Integer id) {
+//        this.idToyota = id;
+//    }
 
-    public Integer getId() {
-        return id;
+    AppProfile(Integer idToyota, Integer idLexus) {
+        this.idToyota = idToyota;
+        this.idLexus = idLexus;
     }
 }

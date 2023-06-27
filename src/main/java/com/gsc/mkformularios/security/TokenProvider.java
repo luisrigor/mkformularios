@@ -2,11 +2,11 @@ package com.gsc.mkformularios.security;
 
 import com.gsc.mkformularios.constants.AppProfile;
 import com.gsc.mkformularios.exceptions.AuthTokenException;
-import com.gsc.mkformularios.model.entity.LoginKey;
-import com.gsc.mkformularios.model.entity.ServiceLogin;
-import com.gsc.mkformularios.repository.ConfigurationRepository;
-import com.gsc.mkformularios.repository.LoginKeyRepository;
-import com.gsc.mkformularios.repository.ServiceLoginRepository;
+import com.gsc.mkformularios.model.toyota.entity.LoginKey;
+import com.gsc.mkformularios.model.toyota.entity.ServiceLogin;
+import com.gsc.mkformularios.repository.toyota.ConfigurationRepository;
+import com.gsc.mkformularios.repository.toyota.LoginKeyRepository;
+import com.gsc.mkformularios.repository.toyota.ServiceLoginRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
@@ -27,6 +27,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.gsc.mkformularios.constants.DATAConstants.APP_LEXUS;
+import static com.gsc.mkformularios.constants.DATAConstants.APP_TOYOTA;
+
 @Service
 public class TokenProvider {
 
@@ -39,6 +42,8 @@ public class TokenProvider {
     private static final String ROLES = "roles";
     private static final String JWT_ENVIRONMENT = "environment";
     private static final String JWT_CLIENT_ID = "client";
+    private static final String OID_DEALER_PARENT = "dealer_parent";
+    private static final String OID_NET = "oid_net";
 
     private final ConfigurationRepository configurationRepository;
     private final ServiceLoginRepository serviceLoginRepository;
@@ -53,8 +58,13 @@ public class TokenProvider {
         this.activeProfile = activeProfile;
     }
 
-    public String createToken(Authentication authentication) throws AuthenticationException {
+    public String createToken(Authentication authentication, String appId) throws AuthenticationException {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        if(appId.equals(String.valueOf(APP_TOYOTA))) {
+            userPrincipal.setOidNet("SC00010001");
+        } else if (appId.equals(String.valueOf(APP_LEXUS))) {
+            userPrincipal.setOidNet("SC00010002");
+        }
 
         Optional<LoginKey> loginKey = getKey();
 
@@ -75,8 +85,10 @@ public class TokenProvider {
                 .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(loginKey.get().getKeyValue())))
                 .setHeaderParam("kid", loginKey.get().getId())
                 .claim(JWT_ENVIRONMENT, activeProfile)
-                .claim(JWT_CLIENT_ID, userPrincipal.getClientId())
+                .claim(JWT_CLIENT_ID, Integer.parseInt(appId))
                 .claim(ROLES, userPrincipal.getRoles())
+                .claim(OID_DEALER_PARENT, userPrincipal.getOidDealerParent())
+                .claim(OID_NET, userPrincipal.getOidNet())
                 .compact();
     }
 
@@ -132,7 +144,9 @@ public class TokenProvider {
                     new UserPrincipal(
                             claims.getSubject(),
                             roles,
-                            claims.get(JWT_CLIENT_ID, Long.class)
+                            claims.get(JWT_CLIENT_ID, Long.class),
+                            claims.get(OID_NET, String.class),
+                            claims.get(OID_DEALER_PARENT, String.class)
                     ),
                     Collections.emptyList()
             );
@@ -166,17 +180,21 @@ public class TokenProvider {
     private Set<AppProfile> getRoles(ServiceLogin sl) {
         Set<AppProfile> profiles = new HashSet<>();
 
-        if (Objects.equals(sl.getUploadFile(), Boolean.TRUE)) {
-            profiles.add(AppProfile.UPLOAD_FILE);
-        }
-
-        if (Objects.equals(sl.getCleanupProjects(), Boolean.TRUE)) {
-            profiles.add(AppProfile.CLEANUP_PROJECTS);
-        }
-
-        if (Objects.equals(sl.getDownloadProjectFiles(), Boolean.TRUE)) {
-            profiles.add(AppProfile.DOWNLOAD_PROJECT_FILES);
-        }
+//        Set<AppProfile> roles = (Set<AppProfile>) claims.get(ROLES, List.class).stream()
+//                .map(role -> AppProfile.valueOf(role.toString()))
+//                .collect(Collectors.toSet());
+//
+//        if (Objects.equals(sl.getUploadFile(), Boolean.TRUE)) {
+//            profiles.add(AppProfile.UPLOAD_FILE);
+//        }
+//
+//        if (Objects.equals(sl.getCleanupProjects(), Boolean.TRUE)) {
+//            profiles.add(AppProfile.CLEANUP_PROJECTS);
+//        }
+//
+//        if (Objects.equals(sl.getDownloadProjectFiles(), Boolean.TRUE)) {
+//            profiles.add(AppProfile.DOWNLOAD_PROJECT_FILES);
+//        }
 
         return profiles;
     }

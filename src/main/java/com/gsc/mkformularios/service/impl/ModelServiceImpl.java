@@ -1,13 +1,13 @@
 package com.gsc.mkformularios.service.impl;
 
-import com.gsc.mkformularios.config.datasource.DbClient;
-import com.gsc.mkformularios.config.datasource.DbContext;
 import com.gsc.mkformularios.dto.GoToModelDTO;
 import com.gsc.mkformularios.dto.ModelDTO;
-import com.gsc.mkformularios.model.entity.PVMCarModelYearForecast;
-import com.gsc.mkformularios.model.entity.PVMCarmodel;
-import com.gsc.mkformularios.repository.PVMCarModelYearForecastRepository;
-import com.gsc.mkformularios.repository.PVMCarmodelRepository;
+import com.gsc.mkformularios.config.datasource.toyota.DbClient;
+import com.gsc.mkformularios.config.datasource.toyota.DbContext;
+import com.gsc.mkformularios.model.toyota.entity.PVMCarModelYearForecast;
+import com.gsc.mkformularios.model.toyota.entity.PVMCarmodel;
+import com.gsc.mkformularios.repository.toyota.PVMCarModelYearForecastRepository;
+import com.gsc.mkformularios.repository.toyota.PVMCarmodelRepository;
 import com.gsc.mkformularios.security.UserPrincipal;
 import com.gsc.mkformularios.service.ModelService;
 import com.rg.dealer.Dealer;
@@ -16,6 +16,9 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+
+import static com.gsc.mkformularios.constants.DATAConstants.APP_LEXUS;
+import static com.gsc.mkformularios.constants.DATAConstants.APP_TOYOTA;
 
 @RequiredArgsConstructor
 @Service
@@ -27,21 +30,24 @@ public class ModelServiceImpl implements ModelService {
     private final PVMCarModelYearForecastRepository pvmCarmodelYearForecastRepository;
 
     public void setDataSourceContext(Long client) {
-        if (client == 2L)
+        if (client == APP_LEXUS) {
             dbContext.setBranchContext(DbClient.DB_LEXUS);
+        } else if (client == APP_TOYOTA) {
+            dbContext.setBranchContext(DbClient.DB_TOYOTA);
+        }
     }
 
-    public GoToModelDTO goToModel(UserPrincipal userPrincipal, boolean isDetail, int idModel,String year) {
+    public GoToModelDTO goToModel(UserPrincipal userPrincipal, boolean isDetail, Integer idModel,String year) {
         try {
             this.setDataSourceContext(userPrincipal.getClientId());
             List<PVMCarModelYearForecast> hmForecasts = null;
-            Optional<PVMCarmodel> oPVMCarModel = null;
+            Optional<PVMCarmodel> oPVMCarModel = Optional.empty();
             List<PVMCarmodel> car = pvmCarmodelRepository.getCar();
             if(isDetail){
                 oPVMCarModel = pvmCarmodelRepository.findById(idModel);
                 log.debug("Year: "+year);
-                if(String.valueOf(userPrincipal.getClientId()).equals(Dealer.OID_NET_TOYOTA)){
-                    hmForecasts =pvmCarmodelYearForecastRepository.findAllById(idModel);
+                if(String.valueOf(userPrincipal.getOidNet()).equals(Dealer.OID_NET_TOYOTA)){
+                    hmForecasts =pvmCarmodelYearForecastRepository.findPVMCarModelYearForecastById(idModel);
                 }
             }
             return GoToModelDTO
@@ -58,20 +64,23 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public void saveModel(UserPrincipal userPrincipal, ModelDTO model,int idModel) {
+    public Boolean saveModel(UserPrincipal userPrincipal, ModelDTO model,int idModel) {
         this.setDataSourceContext(userPrincipal.getClientId());
         try{
             if (idModel > 0) {
                 PVMCarmodel oPVMCarmodel = pvmCarmodelRepository.findById(idModel).get();
             }else {
                 PVMCarmodel carModel = saveCarModel(model);
-                idModel > 0 ? carModel.save(/*agregar getUserStamp*/) : pvmCarmodelRepository.save(carModel);
+                pvmCarmodelRepository.save(carModel);
             }
         }catch (Exception e){
             //Agregar SCErrorException
             log.error("CarModel,Erro ao gerir Modelos" + e.getMessage());
+            throw new RuntimeException("Error saving model", e);
         }
+
         //agregar de return un boolean o DTO
+        return true;
     }
 
     public PVMCarmodel saveCarModel(ModelDTO model){

@@ -5,7 +5,7 @@ import com.gsc.mkformularios.dto.ModelDTO;
 import com.gsc.mkformularios.security.UserPrincipal;
 
 public interface ModelService {
-    GoToModelDTO goToModel(UserPrincipal userPrincipal, boolean isDetail, int idModel, String year);
+    GoToModelDTO goToModel(UserPrincipal userPrincipal, boolean isDetail, Integer idModel, String year);
 
-    void saveModel(UserPrincipal userPrincipal, ModelDTO model, int idModel);
+    Boolean saveModel(UserPrincipal userPrincipal, ModelDTO model, int idModel);
 }
