@@ -1,0 +1,71 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /mk-services
+
+spring:
+  #Local
+  config:
+    activate:
+      on-profile: local
+  jpa:
+    show-sql: true
+  hibernate:
+    ddl-auto: validate
+  datasource:
+    url: jdbc:db2://scdbesrva.sc.pt:50000/TOYXTAPS
+    username: db2inst1
+    password: db2admin
+    driver-class-name: com.ibm.db2.jcc.DB2Driver
+
+  #swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+  #request size
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+springdoc:
+  swagger-ui:
+    enabled: true
+  show-actuator: true
+  display-request-duration: true
+  filter: true
+
+# loggin config file by profile
+log4j:
+  configuration:
+    path: log4j-local.properties
+
+#Ficheiro de configuracao da SC
+sc:
+  config:
+    file: "/home/ronald/Documents/rigor/repos/S3/mkformularios/src/main/resources/sc_config.properties"
+
+#customom properties ex local url
+app:
+  baseUrl: /formularios
+  server:
+    type: 10
+  auth:
+    token-name: accessToken
+  datasource:
+    first:
+      url: jdbc:db2://scdbesrva.sc.pt:50000/TOYXTAPS
+      username: db2inst1
+      password: db2admin
+      driver-class-name: com.ibm.db2.jcc.DB2Driver
+    second:
+      url: jdbc:db2://scdbesrva.sc.pt:50000/LEXXTAPS
+      username: db2inst1
+      password: db2admin
+      driver-class-name: com.ibm.db2.jcc.DB2Driver
+    third:
+      url: jdbc:db2://scdbesrvb.sc.pt:50000/dbtoynet
+      username: db2inst1
+      password: db2admin
+      driver-class-name: com.ibm.db2.jcc.DB2Driver
+
