@@ -5,13 +5,15 @@ import lombok.*;
 
 import java.util.List;
 
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BudgetDTO {
-   List<BudgetDealerDTO> budgetDealers;
-    int year;
-    List<MapTypesDTO> carTypes;
+public class BudgetDealerDTO {
+
+    String[] dealers;
+    List<PVMBudgetDTO> budgets;
+
 }

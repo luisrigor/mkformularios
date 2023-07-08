@@ -1,6 +1,7 @@
 package com.gsc.mkformularios.sample.data.provider;
 
 import com.gsc.mkformularios.dto.*;
+import com.gsc.mkformularios.model.toynet.entity.LexusRetailer;
 import com.gsc.mkformularios.model.toyota.entity.PVMBudget;
 import com.gsc.mkformularios.model.toyota.entity.PVMCarModelYearForecast;
 import com.gsc.mkformularios.model.toyota.entity.PVMCarmodel;
@@ -95,11 +96,9 @@ public class PVMData {
 
         mapDealers.add(dealerDTO);
 
-        List<String> notSendPVM = new ArrayList<>();
-        notSendPVM.add("1");
-        notSendPVM.add("2");
-        notSendPVM.add("3");
-        notSendPVM.add("4");
+
+
+        List<DealerDTO> notSendPVM = new ArrayList<>();
 
 
 
@@ -111,6 +110,23 @@ public class PVMData {
                 .notSendPVM(notSendPVM)
                 .build();
 
+
+    }
+
+    public static List<LexusRetailer> getLexusRetail() {
+        List<LexusRetailer> lexusRetailers = new ArrayList<>();
+        LexusRetailer lexusRetailer1 = LexusRetailer.builder()
+                .aftersalesCode("1")
+                .objectId("1")
+                .cp4(1)
+                .cp3(1)
+                .cpExt("1")
+                .changedBy("user")
+                .comercialName("1")
+                .build();
+
+        lexusRetailers.add(lexusRetailer1);
+        return lexusRetailers;
 
     }
 
@@ -175,9 +191,9 @@ public class PVMData {
     }
 
     public static BudgetDTO getBudgetDto() {
-        List<PVMBudget> budgets = new ArrayList<>();
+        List<PVMBudgetDTO> budgets = new ArrayList<>();
 
-        PVMBudget pvmBudget1 = PVMBudget.builder()
+        PVMBudgetDTO pvmBudget1 = PVMBudgetDTO.builder()
                 .idPvmCarModel(1)
                 .year(1)
                 .month(1)
@@ -194,10 +210,59 @@ public class PVMData {
 
 
         return BudgetDTO.builder()
-                .budgets(budgets)
-                .dealers(dealer)
+                .budgetDealers(Arrays.asList(new BudgetDealerDTO(dealer.get(0), budgets)))
                 .year(2023)
                 .build();
+    }
+
+    public static List<PVMBudgetDTO> getBudgetDealerDto() {
+        List<PVMBudgetDTO> budgets = new ArrayList<>();
+
+        PVMBudgetDTO pvmBudget1 = PVMBudgetDTO.builder()
+                .idPvmCarModel(1)
+                .year(1)
+                .month(1)
+                .oidDealer("1")
+                .plates(1)
+                .build();
+
+        PVMBudgetDTO pvmBudget2 = PVMBudgetDTO.builder()
+                .idPvmCarModel(2)
+                .year(2)
+                .month(2)
+                .oidDealer("2")
+                .plates(2)
+                .build();
+
+        PVMBudgetDTO pvmBudget3 = PVMBudgetDTO.builder()
+                .idPvmCarModel(1)
+                .year(2)
+                .month(2)
+                .oidDealer("SC00020001")
+                .subDealer(1)
+                .plates(2)
+                .build();
+
+        budgets.add(pvmBudget1);
+        budgets.add(pvmBudget2);
+        budgets.add(pvmBudget3);
+
+
+
+        return budgets;
+    }
+
+    public static List<MapTypesDTO> getMapTypes() {
+        List<MapTypesDTO> mapTypesDTOS = new ArrayList<>();
+
+        MapTypesDTO mapTypesDTO1 = MapTypesDTO.builder()
+                .id(1)
+                .type("PASS")
+                .build();
+
+        mapTypesDTOS.add(mapTypesDTO1);
+
+        return mapTypesDTOS;
     }
 
     public static PlanDTO getPlanDto() {
@@ -209,6 +274,7 @@ public class PVMData {
                 .active("A")
                 .name("N")
                 .changedBy("user")
+                .id(1)
                 .build();
 
         car.add(carmodel);

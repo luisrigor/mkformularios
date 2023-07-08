@@ -1,11 +1,13 @@
 package com.gsc.mkformularios.model.toyota.entity;
 
 
+import com.gsc.mkformularios.dto.MapTypesDTO;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -13,6 +15,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
+@SqlResultSetMapping(
+        name = "GetCarTypesMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = MapTypesDTO.class,
+                        columns = {
+                                @ColumnResult(name = "ID", type = Integer.class),
+                                @ColumnResult(name = "TYPE", type = String.class)
+                        }
+                )
+        }
+)
 @Table(name = "PVM_CARMODEL")
 public class PVMCarmodel {
 

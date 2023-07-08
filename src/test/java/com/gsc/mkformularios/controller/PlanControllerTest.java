@@ -20,13 +20,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -82,12 +91,61 @@ class PlanControllerTest {
         when(planService.goToEditPlan(any(), any()))
                 .thenReturn(PVMData.getPlanDto());
 
+
         mvc.perform(get(BASE_REQUEST_MAPPING+PVMEnpoints.PLAN_EDIT+"?year=1").header("accessToken", accessToken))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.car[0].type").value("A"))
                 .andExpect(jsonPath("$.car[0].active").value("A"))
                 .andExpect(jsonPath("$.car[0].name").value("N"))
                 .andExpect(jsonPath("$.car[0].changedBy").value("user"));
+    }
+
+    @Test
+    void whenUploadPlanThenReturnSaved() throws Exception {
+        String accessToken = generatedToken;
+        byte[] fileContent = "Test file content".getBytes(StandardCharsets.UTF_8);
+
+        MockMultipartFile file = new MockMultipartFile("file", "test.txt", MediaType.TEXT_PLAIN_VALUE, fileContent);
+
+
+        when(planService.uploadPlan(any(), any(), any()))
+                .thenReturn(Arrays.asList("saved"));
+
+        String uri = BASE_REQUEST_MAPPING+PVMEnpoints.PLAN_UPLOAD+"?yearPlanUpload=1";
+        ResultActions response = mvc.perform(MockMvcRequestBuilders.multipart(uri)
+                        .file(file)
+                .header("accessToken", accessToken));
+
+                response
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void whenDownloadPlanThenReturnInfo() throws Exception {
+        String accessToken = generatedToken;
+        List<String[]> csvResponse = new ArrayList<>();
+        String[] csv1 = new String[]{"H1", "H2", "H3", "H4"};
+
+        csvResponse.add(csv1);
+
+        when(planService.downloadPlan(any(), any(), any())).thenReturn(csvResponse);
+
+        mvc.perform(get(BASE_REQUEST_MAPPING+PVMEnpoints.PLAN_DOWNLOAD+"?yearPlan=1").header("accessToken", accessToken))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void whenDownloadPlanThenThrows() throws Exception {
+        String accessToken = generatedToken;
+        List<String[]> csvResponse = new ArrayList<>();
+        String[] csv1 = new String[]{"H1", "H2", "H3", "H4"};
+
+        csvResponse.add(csv1);
+
+        when(planService.downloadPlan(any(), any(), any())).thenThrow(RuntimeException.class);
+
+        mvc.perform(get(BASE_REQUEST_MAPPING+PVMEnpoints.PLAN_DOWNLOAD+"?yearPlan=1").header("accessToken", accessToken))
+                .andExpect(status().is5xxServerError());
     }
 
 }

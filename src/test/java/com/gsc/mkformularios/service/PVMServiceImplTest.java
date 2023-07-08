@@ -7,8 +7,10 @@ import com.gsc.mkformularios.constants.api.PVMEnpoints;
 import com.gsc.mkformularios.dto.PVMDetailDTO;
 import com.gsc.mkformularios.dto.PVMGetDTO;
 import com.gsc.mkformularios.dto.PVMRequestDTO;
+import com.gsc.mkformularios.dto.ReportDetailRequestDto;
 import com.gsc.mkformularios.exceptions.CreatePVMException;
 import com.gsc.mkformularios.exceptions.GetPVMException;
+import com.gsc.mkformularios.model.toynet.entity.LexusRetailer;
 import com.gsc.mkformularios.model.toyota.entity.PVMMonthlyReport;
 import com.gsc.mkformularios.repository.toynet.LexusRetailerRepository;
 import com.gsc.mkformularios.repository.toynet.ToyotaRetailerRepository;
@@ -20,6 +22,7 @@ import com.gsc.mkformularios.sample.data.provider.SecurityData;
 import com.gsc.mkformularios.security.UserPrincipal;
 import com.gsc.mkformularios.service.impl.PVMServiceImpl;
 import com.gsc.mkformularios.utils.DealersUtils;
+import com.gsc.mkformularios.utils.UsrlogonUtil;
 import com.sc.commons.exceptions.SCErrorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,8 +36,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -57,6 +59,8 @@ public class PVMServiceImplTest {
     private LexusRetailerRepository lexusRetailerRepository;
     @Mock
     private DealersUtils dealersUtils;
+    @Mock
+    private UsrlogonUtil usrlogonUtil;
 
     @InjectMocks
     private PVMServiceImpl pvmService;
@@ -95,7 +99,10 @@ public class PVMServiceImplTest {
 
 
 
-        List<String> notSendOid = Arrays.asList("1", "100C", "2");
+        List<String> notSendOid =  new ArrayList<>();
+        notSendOid.add("1");
+        notSendOid.add("100C");
+        notSendOid.add("2");
 
         when(pvmMonthlyReportRepository.getPVM(any(), any()))
                 .thenReturn(PVMData.getPVMGotoData().getPvmMonthlyReports());
@@ -133,7 +140,11 @@ public class PVMServiceImplTest {
 
 
 
-        List<String> notSendOid = Arrays.asList("1", "100C", "2");
+        List<String> notSendOid =  new ArrayList<>();
+        notSendOid.add("1");
+        notSendOid.add("100C");
+        notSendOid.add("2");
+
 
         when(pvmMonthlyReportRepository.getPVM(any(), any()))
                 .thenReturn(PVMData.getPVMGotoData().getPvmMonthlyReports());
@@ -144,7 +155,7 @@ public class PVMServiceImplTest {
         when(pvmMonthlyReportRepository.getNotSendPVMOid(anyInt(), anyInt()))
                 .thenReturn(notSendOid);
 
-        when(toyotaRetailerRepository.findAllByObjectidNotIn(any())).thenReturn(new ArrayList<>());
+        when(lexusRetailerRepository.findAllByObjectIdNotIn(any())).thenReturn(PVMData.getLexusRetail());
 
 
 
@@ -302,8 +313,203 @@ public class PVMServiceImplTest {
         assertFalse(success);
     }
 
+    @Test
+    void whenSaveReportThenUpdate() {
+        ReportDetailRequestDto requestDto = ReportDetailRequestDto.builder()
+                .contract("1")
+                .s2("1")
+                .s3("1")
+                .p1("1")
+                .p2("1")
+                .build();
+
+        List<ReportDetailRequestDto> reportDetailRequestDtoList = new ArrayList<>();
+
+        reportDetailRequestDtoList.add(requestDto);
+
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("1");
+        userPrincipal.setOidDealerParent("1");
+
+        doNothing().when(pvmMonthlyReportDetailRepository).updateReportDetail(any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+
+        pvmService.saveReportDetail(userPrincipal, reportDetailRequestDtoList, "1");
+
+        verify(pvmMonthlyReportDetailRepository, times(1)).updateReportDetail(any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+
+    }
+
+    @Test
+    void whenSaveReportThenThrows() {
+        ReportDetailRequestDto requestDto = ReportDetailRequestDto.builder()
+                .contract("1")
+                .s2("1")
+                .s3("1")
+                .p1("1")
+                .p2("1")
+                .build();
+
+        List<ReportDetailRequestDto> reportDetailRequestDtoList = new ArrayList<>();
+
+        reportDetailRequestDtoList.add(requestDto);
+
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("1");
+        userPrincipal.setOidDealerParent("1");
+
+        doThrow(new CreatePVMException("Error test")).when(pvmMonthlyReportDetailRepository).updateReportDetail(any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
 
 
+        assertThrows(CreatePVMException.class ,()->pvmService.saveReportDetail(userPrincipal, reportDetailRequestDtoList, "1"));
+
+
+
+    }
+
+    @Test
+    void whenSendReportThenUpdate() {
+
+        PVMMonthlyReport build = PVMMonthlyReport.builder()
+                .id(1)
+                .year(1)
+                .month(1)
+                .oidDealer("SC00020001")
+                .createdBy("205160085||tcap1@tpo")
+                .available(1)
+                .build();
+
+        ReportDetailRequestDto requestDto = ReportDetailRequestDto.builder()
+                .contract("1")
+                .s2("1")
+                .s3("1")
+                .p1("1")
+                .p2("1")
+                .build();
+
+        List<ReportDetailRequestDto> reportDetailRequestDtoList = new ArrayList<>();
+
+        reportDetailRequestDtoList.add(requestDto);
+
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("1");
+        userPrincipal.setOidDealerParent("1");
+
+        doNothing().when(pvmMonthlyReportDetailRepository).updateReportDetail(any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+
+        when(pvmMonthlyReportRepository.findById(anyInt())).thenReturn(Optional.of(build));
+        when(pvmMonthlyReportRepository.save(any())).thenReturn(build);
+
+        pvmService.sendReportDetail(userPrincipal, reportDetailRequestDtoList, "1");
+
+
+        verify(pvmMonthlyReportDetailRepository, times(1)).updateReportDetail(any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+        verify(pvmMonthlyReportRepository, times(1)).findById(anyInt());
+        verify(pvmMonthlyReportRepository, times(1)).save(any());
+
+    }
+
+    @Test
+    void whenSendReportThenThrows() {
+        ReportDetailRequestDto requestDto = ReportDetailRequestDto.builder()
+                .contract("1")
+                .s2("1")
+                .s3("1")
+                .p1("1")
+                .p2("1")
+                .build();
+
+        List<ReportDetailRequestDto> reportDetailRequestDtoList = new ArrayList<>();
+
+        reportDetailRequestDtoList.add(requestDto);
+
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("1");
+        userPrincipal.setOidDealerParent("1");
+
+        doThrow(new CreatePVMException("Error test")).when(pvmMonthlyReportDetailRepository).updateReportDetail(any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+
+        assertThrows(CreatePVMException.class ,()->pvmService.sendReportDetail(userPrincipal, reportDetailRequestDtoList, "1"));
+
+
+    }
+
+    @Test
+    void whenProvidePVMToDealerThenReturnOk() throws SCErrorException {
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("SC00010001");
+        userPrincipal.setOidDealerParent("1");
+
+        when(pvmMonthlyReportRepository.findById(anyInt())).thenReturn(Optional.of(PVMData.newPVMData()));
+
+        when(dealersUtils.getDealerById(anyString(), anyString())).thenReturn(PVMData.getPVMGotoData().getMapDealers().get(0).getDealer());
+
+        when(pvmMonthlyReportRepository.save(any())).thenReturn(PVMData.newPVMData());
+
+        when(usrlogonUtil.getMailsForProfile(anyInt(), anyString(), anyString())).thenReturn("test@test.com");
+
+        pvmService.providePVMToDealer(userPrincipal, "test", 1);
+
+        verify(pvmMonthlyReportRepository, times(1)).findById(anyInt());
+        verify(dealersUtils, times(1)).getDealerById(anyString(), anyString());
+        verify(pvmMonthlyReportRepository, times(1)).save(any());
+        verify(usrlogonUtil, times(1)).getMailsForProfile(anyInt(),anyString() ,anyString());
+
+    }
+
+    @Test
+    void whenProvidePVMToDealerThenThrows() {
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("SC00010001");
+        userPrincipal.setOidDealerParent("1");
+
+        when(pvmMonthlyReportRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(GetPVMException.class ,()->pvmService.providePVMToDealer(userPrincipal, "test", 1));
+
+
+    }
+
+    @Test
+    void whenRequestToChangeThenReturnOk() throws SCErrorException {
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("SC00010002");
+        userPrincipal.setOidDealerParent("1");
+
+        when(pvmMonthlyReportRepository.findById(anyInt())).thenReturn(Optional.of(PVMData.newPVMData()));
+
+        when(dealersUtils.getDealerById(anyString(), anyString())).thenReturn(PVMData.getPVMGotoData().getMapDealers().get(0).getDealer());
+
+        when(pvmMonthlyReportRepository.save(any())).thenReturn(PVMData.newPVMData());
+
+        when(usrlogonUtil.getMailsForProfile(anyInt(), anyString(), anyString())).thenReturn("test@test.com");
+
+        pvmService.requestToChange(userPrincipal, "test", "1");
+
+        verify(pvmMonthlyReportRepository, times(1)).findById(anyInt());
+        verify(dealersUtils, times(1)).getDealerById(anyString(), anyString());
+        verify(pvmMonthlyReportRepository, times(1)).save(any());
+        verify(usrlogonUtil, times(1)).getMailsForProfile(anyInt(),anyString() ,anyString());
+
+    }
+
+    @Test
+    void whenRequestToChangeThenThrows() {
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("SC00010001");
+        userPrincipal.setOidDealerParent("1");
+
+        when(pvmMonthlyReportRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(GetPVMException.class ,()->pvmService.requestToChange(userPrincipal, "test", "1"));
+
+
+    }
 
 
 }

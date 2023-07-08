@@ -3,6 +3,7 @@ package com.gsc.mkformularios.model.toyota.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,5 +26,13 @@ public class PVMCarModelYearForecast {
     private Integer month;
     @Column(name = "FORECAST")
     private Integer forecast;
+    @Column(name = "CREATED_BY")
+    private String createdBy;
+    @Column(name = "DT_CREATED")
+    private LocalDateTime dtCreated;
+    @Column(name = "CHANGED_BY")
+    private String changedBy;
+    @Column(name = "DT_CHANGED")
+    private LocalDateTime dtChanged;
 
 }

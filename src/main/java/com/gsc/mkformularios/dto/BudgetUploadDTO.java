@@ -3,15 +3,19 @@ package com.gsc.mkformularios.dto;
 import com.gsc.mkformularios.model.toyota.entity.PVMBudget;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class BudgetDTO {
-   List<BudgetDealerDTO> budgetDealers;
-    int year;
-    List<MapTypesDTO> carTypes;
+public class BudgetUploadDTO {
+    List<PVMBudget> lstPVMBudget;
+    String isNewBudget;
+    String yearSelect;
+
+
+
 }

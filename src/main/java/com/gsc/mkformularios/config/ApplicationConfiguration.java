@@ -15,6 +15,11 @@ public class ApplicationConfiguration {
     public static final int ID_PRF_LEXUS_TCAP			= 10026;
     public static final int ID_PRF_LEXUS_DEALER			= 10027;
 
+    public static final String MAIL_ADDRESS_EXTRANET_TOYOTA = "extranettoyota@toyotacaetano.pt";
+    public static final String MAIL_ADDRESS_EXTRANET_LEXUS = "extranet@lexus.pt";
+    public static final String DATASOURCE_USRLOGON		= "jdbc/usrlogon";
+
+
 
     public  int getPVMidApp(String oidNet) {
         if (oidNet.equals(Dealer.OID_NET_TOYOTA))
@@ -25,10 +30,19 @@ public class ApplicationConfiguration {
     }
 
     public static String getMailFrom(String oidNet) {
-//        if (oidNet.equals(Dealer.OID_NET_TOYOTA))
-//            return Mail.MAIL_ADDRESS_EXTRANET_TOYOTA;
-//        else if (oidNet.equals(Dealer.OID_NET_LEXUS))
-//            return Mail.MAIL_ADDRESS_EXTRANET_LEXUS;
+        if (oidNet.equals(Dealer.OID_NET_TOYOTA))
+            return MAIL_ADDRESS_EXTRANET_TOYOTA;
+        else if (oidNet.equals(Dealer.OID_NET_LEXUS))
+            return MAIL_ADDRESS_EXTRANET_LEXUS;
+
+        return null;
+    }
+
+    public static String getUsrlogonViewName(String oidNet) {
+        if (oidNet.equals(Dealer.OID_NET_TOYOTA))
+            return "TOYOTA_USER_ENTITY_PROFILE";
+        else if (oidNet.equals(Dealer.OID_NET_LEXUS))
+            return "LEXUS_USER_ENTITY_PROFILE";
 
         return null;
     }

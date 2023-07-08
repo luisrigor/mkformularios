@@ -1,5 +1,6 @@
 package com.gsc.mkformularios.model.toyota.entity;
 
+import com.gsc.mkformularios.model.toyota.CompositeReportDetail;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,15 +12,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
+@IdClass(CompositeReportDetail.class)
 @Table(name = "PVM_MONTHLYREPORTDETAIL")
 public class PVMMonthlyReportDetail {
 
     @Id
     @Column(name = "ID_PVM_MONTHLYREPORT")
     private Integer monthlyReportId;
-//    @Id
-//    @Column(name = "ID_PVM_CARMODEL")
-//    private Integer carModelId;
+    @Id
+    @Column(name = "ID_PVM_CARMODEL")
+    private Integer carModelId;
     @Column(name = "SALES_VALUE")
     private Integer salesValue;
     @Column(name = "PLATES_VALUE")

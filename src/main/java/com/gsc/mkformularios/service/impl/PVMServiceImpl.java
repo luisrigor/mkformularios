@@ -19,12 +19,16 @@ import com.gsc.mkformularios.repository.toyota.PVMMonthlyReportRepository;
 import com.gsc.mkformularios.security.UserPrincipal;
 import com.gsc.mkformularios.service.PVMService;
 import com.gsc.mkformularios.utils.DealersUtils;
+import com.gsc.mkformularios.utils.UsrlogonUtil;
+import com.sc.commons.comunications.Mail;
+import com.sc.commons.exceptions.SCErrorException;
 import com.sc.commons.utils.DateTimerTasks;
 import com.sc.commons.utils.StringTasks;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 import com.rg.dealer.Dealer;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -46,6 +50,7 @@ public class PVMServiceImpl implements PVMService {
     private final LexusRetailerRepository lexusRetailerRepository;
     private final PVMMonthlyReportDetailRepository pvmMonthlyReportDetailRepository;
     private final DealersUtils dealersUtils;
+    private final UsrlogonUtil usrlogonUtil;
 
     public void setDataSourceContext(Long client) {
         if (client == APP_LEXUS) {
@@ -62,9 +67,11 @@ public class PVMServiceImpl implements PVMService {
             List<PVMMonthlyReport> pvmMonthlyReports = pvmMonthlyReportRepository.getPVM(pvmRequestDTO, userPrincipal);
             List<DealerDTO> mapDealers = dealersUtils.getMapDealers(userPrincipal.getOidNet());
             List<String> notSendPVM = new ArrayList<>();
+            List<DealerDTO> notSendPVMDealers = new ArrayList<>();
 
             if (userPrincipal.getRoles().contains(AppProfile.TCAP)) {
                 List<String> notSendPVMOid = pvmMonthlyReportRepository.getNotSendPVMOid(pvmRequestDTO.getYear(), pvmRequestDTO.getMonth());
+                notSendPVMOid.add("-1");
                 if ("TOYOTA_RETAILER".equals(ApplicationConfiguration.getViewDealers(userPrincipal.getOidNet()))) {
                     List<ToyotaRetailer> allByObjectidNotIn = toyotaRetailerRepository.findAllByObjectidNotIn(notSendPVMOid);
                     notSendPVM = allByObjectidNotIn.stream().map(ToyotaRetailer::getObjectid).collect(Collectors.toList());
@@ -75,10 +82,17 @@ public class PVMServiceImpl implements PVMService {
                 }
             }
 
+            for (String currentNotPVM: notSendPVM) {
+                List<DealerDTO> dealers = mapDealers.stream()
+                        .filter(dealerDTO -> currentNotPVM.equals(dealerDTO.getKey()))
+                        .collect(Collectors.toList());
+                notSendPVMDealers.addAll(dealers);
+            }
+
             return PVMGetDTO.builder()
                     .pvmMonthlyReports(pvmMonthlyReports)
                     .mapDealers(mapDealers)
-                    .notSendPVM(notSendPVM)
+                    .notSendPVM(notSendPVMDealers)
                     .build();
 
         }catch (Exception ex) {
@@ -127,36 +141,35 @@ public class PVMServiceImpl implements PVMService {
 
     @Override
     public void providePVMToDealer(UserPrincipal userPrincipal, String cancelReasons, int idPVM) {
+        cancelReasons = StringTasks.cleanString(cancelReasons, "");
+        idPVM = StringTasks.cleanInteger(String.valueOf(idPVM), -1);
         try {
-            if (idPVM > 0) {
-                this.setDataSourceContext(userPrincipal.getClientId());
-                PVMMonthlyReport oPVMMonthlyReport = pvmMonthlyReportRepository.findById(idPVM).get();
-                Dealer oDealer = Dealer.getHelper().getByObjectId(userPrincipal.getOidNet(), oPVMMonthlyReport.getOidDealer());
-                String reason = oPVMMonthlyReport.getReason();
-                if (!reason.equals(""))
-                    reason += "\n\n";
+            this.setDataSourceContext(userPrincipal.getClientId());
+            PVMMonthlyReport oPVMMonthlyReport = pvmMonthlyReportRepository.findById(idPVM).orElseThrow(()->new GetPVMException("No record with id were found"));
+            Dealer oDealer = dealersUtils.getDealerById(userPrincipal.getOidNet(), oPVMMonthlyReport.getOidDealer());
+            String reason = oPVMMonthlyReport.getReason();
+            if (!reason.equals(""))
+                reason += "\n\n";
 
-                oPVMMonthlyReport.setReason(reason + "Pedido de Devolu��o de PVM\nDe NMSC:\nPara: " + oDealer.getDesig() + "\nData: " + DateTimerTasks.Today() + "\nMotivo: " + cancelReasons + "\n\n");
-                oPVMMonthlyReport.setAvailable(0);
-                oPVMMonthlyReport.setDtAvailability(null);
-                pvmMonthlyReportRepository.save(oPVMMonthlyReport);
+            oPVMMonthlyReport.setReason(reason + "Pedido de Devolução de PVM\nDe NMSC:\nPara: " + oDealer.getDesig() + "\nData: " + DateTimerTasks.Today() + "\nMotivo: " + cancelReasons + "\n\n");
+            oPVMMonthlyReport.setAvailable(0);
+            oPVMMonthlyReport.setDtAvailability(null);
+            pvmMonthlyReportRepository.save(oPVMMonthlyReport);
 
-//                String strMail = "O PVM (Previs�o de Vendas/Matr�culas Mensais) de "+oPVMMonthlyReport.getYear()+"/"+oPVMMonthlyReport.getMonth()+" encontra-se novamente dispon�vel.\n\n"+"Motivos:\n"+reason+"\n\n\nPoder� consultar e dar sequ�ncia a este registo, no Portal da Extranet Toyota.\n\nCumprimentos,\nExtranet Toyota" + Mail.getFooterNoReply();
-//                String from = ApplicationConfiguration.getMailFrom(String.valueOf(userPrincipal.getClientId()));
-//               int idProfile = String.valueOf(userPrincipal.getClientId()).equals(Dealer.OID_NET_TOYOTA) ?
-//                        ApplicationConfiguration.ID_PRF_TOYOTA_TCAP : ApplicationConfiguration.ID_PRF_LEXUS_TCAP;
-                //agregar clase ultilitaria
-//                String to = UsrlogonUtil.getMailsForProfile(idProfile, oGSCUser.getOidDealerParent(), oGSCUser.getOidNet());
-//                String application = String.valueOf(userPrincipal.getClientId()).equals(Dealer.OID_NET_TOYOTA) ? "Toyota" : "Lexus";
-//                Mail.SendMail(from, to, "", Mail.MAIL_ADDRESS_WEBNOFITICATIONS, "Extranet "+ application +" - PVM devolvido.", strMail);
-            }
+            String strMail = "O PVM (Previsão de Vendas/Matrículas Mensais) de "+oPVMMonthlyReport.getYear()+"/"+oPVMMonthlyReport.getMonth()+" í\n\n"+"Motivos:\n"+reason+"\n\n\nPoderá consultar e dar sequência a este registo, no Portal da Extranet Toyota.\n\nCumprimentos,\nExtranet Toyota" + Mail.getFooterNoReply();
+            this.selectMailInfo(userPrincipal.getOidNet(), userPrincipal.getOidDealerParent(),-1, -1, oPVMMonthlyReport.getReason(), strMail);
         } catch (Exception ex) {
             //validar para agregar SCErrorException
-            log.error("PVM,Error ao devolver a Previs�o de Vendas Mensais" + ex.getMessage());
+            log.error("PVM, Error returning the Monthly Sales Forecast ", ex);
+            throw  new GetPVMException("Error returning the Monthly Sales Forecast ", ex);
+
         }
 
     }
 
+
+    @Transactional
+    @Override
     public void saveReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS) {
         this.setDataSourceContext(userPrincipal.getClientId());
         int idPVM = StringTasks.cleanInteger(idPVMS, -1);
@@ -164,22 +177,7 @@ public class PVMServiceImpl implements PVMService {
 
         try {
             for (ReportDetailRequestDto currentReportDetail: reportDetailRequestDto) {
-
-                int idModel = currentReportDetail.getIdModel();
-                int contract = StringTasks.cleanInteger(currentReportDetail.getContract(),0);
-                int sales1 = StringTasks.cleanInteger(currentReportDetail.getS1(),0);
-                int sales2 = StringTasks.cleanInteger(currentReportDetail.getS2(),0);
-                int sales3 = StringTasks.cleanInteger(currentReportDetail.getS3(),0);
-                int plates1 = StringTasks.cleanInteger(currentReportDetail.getP1(),0);
-                int plates2 = StringTasks.cleanInteger(currentReportDetail.getP2(),0);
-                int plates3 = StringTasks.cleanInteger(currentReportDetail.getP3(),0);
-
-                int vdvc = StringTasks.cleanInteger(currentReportDetail.getV1(), 0);
-                int vdvc2 = StringTasks.cleanInteger(currentReportDetail.getV2(), 0);
-                int vdvc3 = StringTasks.cleanInteger(currentReportDetail.getV3(), 0);
-                Timestamp ts = new Timestamp(System.currentTimeMillis());
-
-//                pvmMonthlyReportDetailRepository.updateReportDetail(userStamp, ts.toLocalDateTime(), sales1, plates1, sales2, sales3, plates2, plates3, contract, vdvc, vdvc2, vdvc3, idPVM, idModel);
+                this.updateReportDetail(currentReportDetail, userStamp, idPVM);
             }
         } catch (Exception e) {
             log.error("Error saving monthly sales forecast", e);
@@ -187,6 +185,54 @@ public class PVMServiceImpl implements PVMService {
         }
     }
 
+    @Transactional
+    @Override
+    public void sendReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS) {
+        this.setDataSourceContext(userPrincipal.getClientId());
+        int idPVM = StringTasks.cleanInteger(idPVMS, -1);
+        String userStamp = userPrincipal.getUsername().split("\\|\\|")[0]+"||"+userPrincipal.getUsername().split("\\|\\|")[1];
+
+        try {
+            for (ReportDetailRequestDto currentReportDetail: reportDetailRequestDto) {
+                this.updateReportDetail(currentReportDetail, userStamp, idPVM);
+            }
+            Optional<PVMMonthlyReport> monthlyReport = pvmMonthlyReportRepository.findById(idPVM);
+            if(monthlyReport.isPresent()) {
+                Timestamp ts = new Timestamp(System.currentTimeMillis());
+                PVMMonthlyReport monthlyReportId = monthlyReport.get();
+                monthlyReportId.setAvailable(1);
+                monthlyReportId.setDtAvailability(ts.toLocalDateTime());
+                pvmMonthlyReportRepository.save(monthlyReportId);
+            }
+        } catch (Exception e) {
+            log.error("Error saving monthly sales forecast", e);
+            throw new CreatePVMException("Error saving monthly sales forecast", e);
+        }
+    }
+
+    public void requestToChange(UserPrincipal userPrincipal, String cancelReasons, String idPVMs) {
+        cancelReasons = StringTasks.cleanString(cancelReasons, "");
+        int idPVM = StringTasks.cleanInteger(idPVMs, -1);
+
+        try {
+            this.setDataSourceContext(userPrincipal.getClientId());
+            PVMMonthlyReport oPVMMonthlyReport = pvmMonthlyReportRepository.findById(idPVM).orElseThrow(()->new GetPVMException("No report with id " +idPVM+ "were found"));
+            Dealer oDealer = dealersUtils.getDealerById(userPrincipal.getOidNet(), oPVMMonthlyReport.getOidDealer());
+            String reason = oPVMMonthlyReport.getReason();
+            int year = oPVMMonthlyReport.getYear();
+            int month = oPVMMonthlyReport.getMonth();
+            if (!reason.equals(""))
+                reason += "\n\n";
+
+            oPVMMonthlyReport.setReason(reason +"Pedido de Devolução de PVM\nDe: "+ oDealer.getDesig() + "\nPara: NMSC\nData: "+ DateTimerTasks.Today() + "\nMotivo: " + cancelReasons + "\n\n");
+            //grava reason
+            oPVMMonthlyReport = pvmMonthlyReportRepository.save(oPVMMonthlyReport);
+            this.selectMailInfo(userPrincipal.getOidNet(), userPrincipal.getOidDealerParent(),year, month, oPVMMonthlyReport.getReason(), null);
+        } catch (Exception e) {
+            log.error("Error returning the Monthly Sales Forecast", e);
+            throw  new GetPVMException("Error returning the Monthly Sales Forecast", e);
+        }
+    }
 
 
     public PVMMonthlyReport insertMonthlyReport(UserPrincipal userPrincipal, int subDealer){
@@ -200,6 +246,44 @@ public class PVMServiceImpl implements PVMService {
         oPVMMonthlyReport.setAvailable(0);
         oPVMMonthlyReport.setSubDealer(subDealer);
         return pvmMonthlyReportRepository.save(oPVMMonthlyReport);
+    }
+
+    @Transactional
+    public void updateReportDetail(ReportDetailRequestDto currentReportDetail, String userStamp, Integer idPVM) {
+        int idModel = currentReportDetail.getIdModel();
+        int contract = StringTasks.cleanInteger(currentReportDetail.getContract(),0);
+        int sales1 = StringTasks.cleanInteger(currentReportDetail.getS1(),0);
+        int sales2 = StringTasks.cleanInteger(currentReportDetail.getS2(),0);
+        int sales3 = StringTasks.cleanInteger(currentReportDetail.getS3(),0);
+        int plates1 = StringTasks.cleanInteger(currentReportDetail.getP1(),0);
+        int plates2 = StringTasks.cleanInteger(currentReportDetail.getP2(),0);
+        int plates3 = StringTasks.cleanInteger(currentReportDetail.getP3(),0);
+
+        int vdvc = StringTasks.cleanInteger(currentReportDetail.getV1(), 0);
+        int vdvc2 = StringTasks.cleanInteger(currentReportDetail.getV2(), 0);
+        int vdvc3 = StringTasks.cleanInteger(currentReportDetail.getV3(), 0);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+
+        pvmMonthlyReportDetailRepository.updateReportDetail(userStamp, ts.toLocalDateTime(), sales1, plates1, sales2, sales3, plates2, plates3, contract, vdvc, vdvc2, vdvc3, idPVM, idModel);
+    }
+
+
+    private void selectMailInfo(String oidNet, String oidDealerParent, int year, int month, String reason, String strMail) throws SCErrorException {
+        int idProfile;
+        String from = ApplicationConfiguration.getMailFrom(oidNet);
+        if(oidNet.equals(Dealer.OID_NET_TOYOTA)) {
+            strMail = strMail==null?"Foi pedida a devolução do PVM (Previsão de Vendas/Matrículas Mensais) de "+year+"/"+month+"\n\nMotivos:\n"+reason+"\n\n\nPoderá consultar e dar sequência a este registo, no Portal da Extranet Toyota.\n\nCumprimentos,\nExtranet Toyota" + Mail.getFooterNoReply()
+                    :strMail;
+            idProfile = ApplicationConfiguration.ID_PRF_TOYOTA_DEALER;
+            String to = usrlogonUtil.getMailsForProfile(idProfile, oidDealerParent, oidNet);
+            Mail.SendMail(from, to, "", Mail.MAIL_ADDRESS_WEBNOFITICATIONS, "Extranet Toyota - PVM devolvido.", strMail);
+        } else if (oidNet.equals(Dealer.OID_NET_LEXUS)) {
+            strMail = strMail==null?"Foi pedida a devolução do PVM (Previsão  de Vendas/Matrículas Mensais) de "+year+"/"+month+"\n\nMotivos:\n"+reason+"\n\n\nPoderá consultar e dar sequência a este registo, no Portal da Extranet Lexus.\n\nCumprimentos,\nExtranet Lexus" + Mail.getFooterNoReply():
+                    strMail;
+            idProfile = ApplicationConfiguration.ID_PRF_LEXUS_DEALER;
+            String to = usrlogonUtil.getMailsForProfile(idProfile, oidDealerParent, oidNet);
+            Mail.SendMail(from, to, "", Mail.MAIL_ADDRESS_WEBNOFITICATIONS, "Extranet Lexus - PVM devolvido.", strMail);
+        }
     }
 
 }
