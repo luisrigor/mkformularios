@@ -132,7 +132,6 @@ public class PVMServiceImpl implements PVMService {
                 success = true;
             }
         }catch (Exception ex) {
-            //Revisar para aplicar SCErrorException
             log.error("oGSCUser.getLogin(),PVM,Erro ao criar nova Previs�o de Vendas Mensais" + ex.getMessage());
             throw new CreatePVMException("An error occurred while getting Golden Record Relationships", ex);
         }
@@ -159,14 +158,12 @@ public class PVMServiceImpl implements PVMService {
             String strMail = "O PVM (Previsão de Vendas/Matrículas Mensais) de "+oPVMMonthlyReport.getYear()+"/"+oPVMMonthlyReport.getMonth()+" í\n\n"+"Motivos:\n"+reason+"\n\n\nPoderá consultar e dar sequência a este registo, no Portal da Extranet Toyota.\n\nCumprimentos,\nExtranet Toyota" + Mail.getFooterNoReply();
             this.selectMailInfo(userPrincipal.getOidNet(), userPrincipal.getOidDealerParent(),-1, -1, oPVMMonthlyReport.getReason(), strMail);
         } catch (Exception ex) {
-            //validar para agregar SCErrorException
             log.error("PVM, Error returning the Monthly Sales Forecast ", ex);
             throw  new GetPVMException("Error returning the Monthly Sales Forecast ", ex);
 
         }
 
     }
-
 
     @Transactional
     @Override
@@ -180,8 +177,8 @@ public class PVMServiceImpl implements PVMService {
                 this.updateReportDetail(currentReportDetail, userStamp, idPVM);
             }
         } catch (Exception e) {
-            log.error("Error saving monthly sales forecast", e);
-            throw new CreatePVMException("Error saving monthly sales forecast", e);
+            log.error("Error saving monthly sales forecasts", e);
+            throw new CreatePVMException("Error saving monthly sales forecasts", e);
         }
     }
 
