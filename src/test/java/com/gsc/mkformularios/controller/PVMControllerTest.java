@@ -7,6 +7,7 @@ import com.gsc.mkformularios.constants.api.PVMEnpoints;
 import com.gsc.mkformularios.dto.ModelDTO;
 import com.gsc.mkformularios.dto.PVMGetDTO;
 import com.gsc.mkformularios.dto.PVMRequestDTO;
+import com.gsc.mkformularios.dto.ReportDetailRequestDto;
 import com.gsc.mkformularios.model.toyota.entity.PVMCarmodel;
 import com.gsc.mkformularios.repository.toyota.ClientRepository;
 import com.gsc.mkformularios.repository.toyota.ConfigurationRepository;
@@ -30,9 +31,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -128,6 +133,79 @@ class PVMControllerTest {
                 .andExpect(status().is2xxSuccessful());
     }
 
+
+    @Test
+    void whenSaveReportThenReturn() throws Exception {
+        String accessToken = generatedToken;
+
+        ReportDetailRequestDto requestDto = ReportDetailRequestDto.builder()
+                .contract("1")
+                .s2("1")
+                .s3("1")
+                .p1("1")
+                .p2("1")
+                .build();
+
+        List<ReportDetailRequestDto> reportDetailRequestDtoList = new ArrayList<>();
+
+        reportDetailRequestDtoList.add(requestDto);
+
+        doNothing().when(pvmService).saveReportDetail(any(), any(), anyString());
+
+        mvc.perform(post(BASE_REQUEST_MAPPING+PVMEnpoints.PVM_SAVE_REPORT_DETAIL+"?idPVMS=1").header("accessToken", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(reportDetailRequestDtoList)))
+
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void whenSendReportThenReturnOk() throws Exception {
+        String accessToken = generatedToken;
+
+        ReportDetailRequestDto requestDto = ReportDetailRequestDto.builder()
+                .contract("1")
+                .s2("1")
+                .s3("1")
+                .p1("1")
+                .p2("1")
+                .build();
+
+        List<ReportDetailRequestDto> reportDetailRequestDtoList = new ArrayList<>();
+
+        reportDetailRequestDtoList.add(requestDto);
+
+        doNothing().when(pvmService).sendReportDetail(any(), any(), anyString());
+
+        mvc.perform(post(BASE_REQUEST_MAPPING+PVMEnpoints.PVM_SEND_REPORTDETAIL+"?idPVMS=1").header("accessToken", accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(reportDetailRequestDtoList)))
+
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void whenProvidePVMToDealerThenReturnOk() throws Exception {
+        String accessToken = generatedToken;
+
+        doNothing().when(pvmService).providePVMToDealer(any(), any(), anyInt());
+
+        mvc.perform(post(BASE_REQUEST_MAPPING+PVMEnpoints.PVM_PROVIDE_TO_DEALER+"?idPVM=1&cancelReasons=tests").header("accessToken", accessToken))
+
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void whenrequestToChangeThenReturnOk() throws Exception {
+        String accessToken = generatedToken;
+
+
+        doNothing().when(pvmService).requestToChange(any(), any(), anyString());
+
+        mvc.perform(post(BASE_REQUEST_MAPPING+PVMEnpoints.PVM_REQUEST_TO_CHANGE+"?idPVMS=1&cancelReasons=tests").header("accessToken", accessToken))
+
+                .andExpect(status().is2xxSuccessful());
+    }
 
 
 

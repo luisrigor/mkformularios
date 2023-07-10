@@ -61,6 +61,15 @@ public class DbConfigLocal {
         dbToynet.setPassword("db2admin");
         conn.setDataSource(dbToynet, "jdbc/dbtoynet");
         log.info("Datasource initialized successfully: jdbc/dbtoynet");
+        DB2SimpleDataSource dblexxtaps = new DB2SimpleDataSource();
+        dblexxtaps.setServerName("scdbesrvb.sc.pt");
+        dblexxtaps.setPortNumber(50000);
+        dblexxtaps.setDatabaseName("USRLOGON");
+        dblexxtaps.setDriverType(4);
+        dblexxtaps.setUser("db2inst1");
+        dblexxtaps.setPassword("db2admin");
+        conn.setDataSource(dblexxtaps, "jdbc/lexxtaps");
+        log.info("Datasource initialized successfully: jdbc/lexxtaps");
         DB2SimpleDataSource usrLogon = new DB2SimpleDataSource();
         usrLogon.setServerName("scdbesrvb.sc.pt");
         usrLogon.setPortNumber(50000);
@@ -68,8 +77,8 @@ public class DbConfigLocal {
         usrLogon.setDriverType(4);
         usrLogon.setUser("db2inst1");
         usrLogon.setPassword("db2admin");
-        conn.setDataSource(usrLogon, "jdbc/lexxtaps");
-        log.info("Datasource initialized successfully: jdbc/lexxtaps");
+        conn.setDataSource(usrLogon, "jdbc/usrlogon");
+        log.info("Datasource initialized successfully: jdbc/usrlogon");
     }
 
     @Primary

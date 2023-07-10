@@ -2,6 +2,9 @@ server:
   port: 8083
   servlet:
     context-path: /mk-services
+    encoding:
+      force-response: true
+      charset: utf-8
 
 spring:
   #Local

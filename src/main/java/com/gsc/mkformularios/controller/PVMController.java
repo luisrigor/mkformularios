@@ -58,7 +58,31 @@ public class PVMController {
                                                    @RequestBody List<ReportDetailRequestDto> reportDetailList, @RequestParam String idPVMS) {
         log.info("Client id " + userPrincipal.getClientId());
         PVMService.saveReportDetail(userPrincipal, reportDetailList, idPVMS);
-        return ResponseEntity.status(HttpStatus.OK).body("pvmDetail");
+        return ResponseEntity.status(HttpStatus.OK).body("saved");
+    }
+
+    @PostMapping(PVMEnpoints.PVM_PROVIDE_TO_DEALER)
+    public ResponseEntity<String> provideToDealer(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                  @RequestParam String cancelReasons, @RequestParam int idPVM) {
+        log.info("Client id " + userPrincipal.getClientId());
+        PVMService.providePVMToDealer(userPrincipal, cancelReasons, idPVM);
+        return ResponseEntity.status(HttpStatus.OK).body("saved");
+    }
+
+    @PostMapping(PVMEnpoints.PVM_REQUEST_TO_CHANGE)
+    public ResponseEntity<String> requestToChange(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                   @RequestParam String cancelReasons, @RequestParam String idPVMS) {
+        log.info("Client id " + userPrincipal.getClientId());
+        PVMService.requestToChange(userPrincipal, cancelReasons, idPVMS);
+        return ResponseEntity.status(HttpStatus.OK).body("saved");
+    }
+
+    @PostMapping(PVMEnpoints.PVM_SEND_REPORTDETAIL)
+    public ResponseEntity<String> sendReportDetail(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                   @RequestBody List<ReportDetailRequestDto> reportDetailList, @RequestParam String idPVMS) {
+        log.info("Client id " + userPrincipal.getClientId());
+        PVMService.sendReportDetail(userPrincipal, reportDetailList, idPVMS);
+        return ResponseEntity.status(HttpStatus.OK).body("saved");
     }
 
 

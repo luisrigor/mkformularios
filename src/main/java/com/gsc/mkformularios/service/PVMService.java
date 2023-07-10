@@ -18,4 +18,6 @@ public interface PVMService {
     void providePVMToDealer(UserPrincipal userPrincipal,String cancelReasons,int idPVM);
 
     void saveReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS);
+    void sendReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS);
+    void requestToChange(UserPrincipal userPrincipal, String cancelReasons, String idPVMS);
 }

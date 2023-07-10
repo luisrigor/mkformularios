@@ -16,5 +16,5 @@ public class PVMGetDTO {
 
     List<PVMMonthlyReport> pvmMonthlyReports;
     List<DealerDTO> mapDealers;
-    List<String> notSendPVM;
+    List<DealerDTO> notSendPVM;
 }

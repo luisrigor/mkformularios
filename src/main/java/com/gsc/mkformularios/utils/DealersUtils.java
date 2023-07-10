@@ -45,6 +45,27 @@ public class DealersUtils {
         return vecResult;
 
     }
+
+    public Dealer getDealerById(String oidNet, String oidDealer) throws SCErrorException {
+        return Dealer.getHelper().getByObjectId(oidNet, oidDealer);
+    }
+
+    public Hashtable<String, Dealer>  getAllActiveMainDealers(String oidNet) throws SCErrorException {
+        return Dealer.getToyotaHelper().getAllActiveMainDealers(oidNet);
+
+    }
+
+    public static Map<String, Dealer> convertHashDealers(Hashtable<String, Dealer> allDealersByOid) {
+
+        Map<String, Dealer> mapDlrs = new Hashtable<String, Dealer>();
+        Enumeration<Dealer> enumDlrs = allDealersByOid.elements();
+        while (enumDlrs.hasMoreElements()) {
+            Dealer oDealer = enumDlrs.nextElement();
+            mapDlrs.put(oDealer.getDealerCode(), oDealer);
+        }
+        return mapDlrs;
+    }
 }
+
 
 
