@@ -21,5 +21,7 @@ public interface PVMEnpoints {
     String PVM_REQUEST_TO_CHANGE = "/pvm-request-change";
     String PVM_SEND_REPORTDETAIL = "/pvm-send-report";
 
+    String PREVISION_MONTH = "/prevision-month";
+
 
 }

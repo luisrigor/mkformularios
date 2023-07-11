@@ -1,7 +1,6 @@
 package com.gsc.mkformularios.config;
 
 import com.rg.dealer.Dealer;
-import com.sc.commons.comunications.Mail;
 
 
 public class ApplicationConfiguration {
@@ -18,6 +17,8 @@ public class ApplicationConfiguration {
     public static final String MAIL_ADDRESS_EXTRANET_TOYOTA = "extranettoyota@toyotacaetano.pt";
     public static final String MAIL_ADDRESS_EXTRANET_LEXUS = "extranet@lexus.pt";
     public static final String DATASOURCE_USRLOGON		= "jdbc/usrlogon";
+
+    public static final String TVC_MANAGER_ROLE_ACTIVE_DEALERS			= "ACTIVE_DEALERS";
 
 
 
