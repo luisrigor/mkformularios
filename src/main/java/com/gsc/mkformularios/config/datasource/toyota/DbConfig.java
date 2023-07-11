@@ -1,5 +1,7 @@
 package com.gsc.mkformularios.config.datasource.toyota;
 
+import com.sc.commons.dbconnection.ServerJDBCConnection;
+import com.sc.commons.initialization.SCGlobalPreferences;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.annotation.PostConstruct;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -49,17 +53,17 @@ public class DbConfig {
 
     @PostConstruct
     private void init() {
-//        SCGlobalPreferences.setResources(scConfigFile);
-//        jndis.stream().forEach(jndiName -> {
-//            try {
-//                InitialContext ctx = new InitialContext();
-//                ServerJDBCConnection conn = ServerJDBCConnection.getInstance();
-//                conn.setDataSource((DataSource) ctx.lookup(jndiName), jndiName);
-//                log.info("Datasource initialized successfully: {}", jndiName);
-//            } catch (NamingException e) {
-//                log.error("Error initializing datasource ({}): {}", jndiName, e.getMessage());
-//            }
-//        });
+        SCGlobalPreferences.setResources(scConfigFile);
+        jndis.stream().forEach(jndiName -> {
+            try {
+                InitialContext ctx = new InitialContext();
+                ServerJDBCConnection conn = ServerJDBCConnection.getInstance();
+                conn.setDataSource((DataSource) ctx.lookup(jndiName), jndiName);
+                log.info("Datasource initialized successfully: {}", jndiName);
+            } catch (NamingException e) {
+                log.error("Error initializing datasource ({}): {}", jndiName, e.getMessage());
+            }
+        });
     }
     @Primary
     @Bean(name="msDatasource",
