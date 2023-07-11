@@ -57,7 +57,6 @@ public class ModelServiceImpl implements ModelService {
                     .carModel(oPVMCarModel.orElse(null))
                     .build();
         } catch (Exception e) {
-            //TODO Agregar SCErrorException
             log.error("Erro ao consultar detalhe do modelo"+ e.getMessage());
             throw new RuntimeException("Erro ao consultar detalhe do");
         }
@@ -74,12 +73,9 @@ public class ModelServiceImpl implements ModelService {
                 pvmCarmodelRepository.save(carModel);
             }
         }catch (Exception e){
-            //Agregar SCErrorException
             log.error("CarModel,Erro ao gerir Modelos" + e.getMessage());
             throw new RuntimeException("Error saving model", e);
         }
-
-        //agregar de return un boolean o DTO
         return true;
     }
 
