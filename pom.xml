@@ -116,11 +116,6 @@
 		</dependency>
 		<dependency>
 			<groupId>GSC</groupId>
-			<artifactId>SCMicrosoft</artifactId>
-			<version>20221024-STAGING</version>
-		</dependency>
-		<dependency>
-			<groupId>GSC</groupId>
 			<artifactId>SCWSCARDB</artifactId>
 			<version>20230320</version>
 		</dependency>
