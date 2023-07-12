@@ -52,7 +52,12 @@ public class BudgetController {
 
         try {
             List<String[]> data = budgetService.downloadBudget(yearBudget, userPrincipal, response);
-            CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(response.getOutputStream()));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
+            CSVWriter csvWriter = new CSVWriter(outputStreamWriter,
+                    ';',
+                    CSVWriter.NO_QUOTE_CHARACTER,
+                    CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                    CSVWriter.DEFAULT_LINE_END);
             csvWriter.writeAll(data);
             csvWriter.close();
         } catch (Exception e) {
