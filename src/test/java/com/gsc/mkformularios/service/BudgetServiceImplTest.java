@@ -172,10 +172,10 @@ public class BudgetServiceImplTest {
         when(pvmCarmodelRepository.getCarTypes()).thenReturn(PVMData.getMapTypes());
 
         List<String[]> budget = budgetService.downloadBudget("2023", userPrincipal, response);
-        assertEquals("=\"75\"", budget.get(1)[0]);
+        assertEquals("=75", budget.get(1)[0]);
         assertEquals("1", budget.get(1)[1]);
         assertEquals("0", budget.get(1)[2]);
-        assertEquals("=\"99\"", budget.get(2)[0]);
+        assertEquals("=99", budget.get(2)[0]);
         assertEquals("1", budget.get(2)[1]);
         assertEquals("0", budget.get(2)[2]);
     }
@@ -243,11 +243,11 @@ public class BudgetServiceImplTest {
 
         byte[] fileData = (
                 "Cod. Concessão;Mês;testNewType;COMERCIAIS;TESTESTS;PASSAGEIROS \n" +
-                        "=\"61\";1;888;0;0;0 \n" +
-                        "=\"42\";1;0;0;0;0 \n" +
-                        "=\"22\";1;0;0;0;0 \n" +
-                        "=\"75\";1;0;0;0;0 \n"
-                ).getBytes(StandardCharsets.ISO_8859_1);
+                        "=61;1;888;0;0;0 \n" +
+                        "=42;1;0;0;0;0 \n" +
+                        "=22;1;0;0;0;0 \n" +
+                        "=75;1;0;0;0;0 \n"
+                ).getBytes(StandardCharsets.UTF_8);
         InputStream inputStream = new ByteArrayInputStream(fileData);
         MockMultipartFile file = new MockMultipartFile("file", "test.csv",
                 "text/csv", inputStream);
