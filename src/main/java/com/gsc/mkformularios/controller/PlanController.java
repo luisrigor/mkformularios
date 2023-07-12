@@ -56,7 +56,7 @@ public class PlanController {
 
     @PostMapping(PVMEnpoints.PLAN_UPLOAD)
     public ResponseEntity<List<String>> uploadPlan(@RequestPart MultipartFile file,
-                                                   @AuthenticationPrincipal UserPrincipal userPrincipal, String yearUploadPlan) {
+                                                   @AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam String yearUploadPlan) {
         List<String> saved = planService.uploadPlan(file, yearUploadPlan,userPrincipal);
         return ResponseEntity.status(HttpStatus.OK).body(saved);
     }
