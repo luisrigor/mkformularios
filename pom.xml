@@ -176,7 +176,9 @@
 			<version>5.0</version>
 		</dependency>
 	</dependencies>
+
 	<build>
+		<finalName>mkformularios</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -190,7 +192,39 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+				<configuration>
+					<excludes>
+						<exclude>com/gsc/mkformularios/config/**</exclude>
+						<exclude>com/gsc/mkformularios/constants/**</exclude>
+						<exclude>com/gsc/mkformularios/dto/**</exclude>
+						<exclude>com/gsc/mkformularios/exceptions/**</exclude>
+						<exclude>com/gsc/mkformularios/model/**</exclude>
+						<exclude>com/gsc/mkformularios/repository/**</exclude>
+						<exclude>com/gsc/mkformularios/security/**</exclude>
+						<exclude>com/gsc/mkformularios/utils/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+
 	</build>
 
 	<repositories>
