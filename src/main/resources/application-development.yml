@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /mk-services
+    context-path: /MKFormularios
     encoding:
       force-response: true
       charset: utf-8

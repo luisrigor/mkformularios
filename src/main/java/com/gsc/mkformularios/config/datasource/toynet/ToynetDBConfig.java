@@ -31,15 +31,9 @@ import java.util.Map;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = "toyEntityManagerFactory",
-//        transactionManagerRef = "toyTransactionManager",
         basePackages = {"com.gsc.mkformularios.repository.toynet"}
 )
 public class ToynetDBConfig {
-
-
-//    private static final Logger log = LoggerFactory.getLogger(DbConfigLocal.class);
-
-
 
     @Autowired
     private Environment env;
