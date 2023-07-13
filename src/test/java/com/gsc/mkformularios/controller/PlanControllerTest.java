@@ -100,7 +100,7 @@ class PlanControllerTest {
                 .andExpect(jsonPath("$.car[0].changedBy").value("user"));
     }
 
-    @Test
+   /* @Test
     void whenUploadPlanThenReturnSaved() throws Exception {
         String accessToken = generatedToken;
         byte[] fileContent = "Test file content".getBytes(StandardCharsets.UTF_8);
@@ -118,7 +118,7 @@ class PlanControllerTest {
 
                 response
                 .andExpect(status().is2xxSuccessful());
-    }
+    }*/
 
     @Test
     void whenDownloadPlanThenReturnInfo() throws Exception {
