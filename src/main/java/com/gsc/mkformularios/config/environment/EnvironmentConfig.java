@@ -23,6 +23,4 @@ public interface EnvironmentConfig {
 
     A2pApiInvoke getA2pApiInvoker();
 
-    Map<String, String> getEnvVariables();
-
 }

@@ -37,10 +37,8 @@ import java.util.Map;
 public class DbConfigLocal {
 
     private final DataSourceRoutingLocal dataSourceRoutingLocal;
-
-//    private static final Logger log = LoggerFactory.getLogger(DbConfigLocal.class);
-
-
+    private final String USER = "db2inst1";
+    private final String PASSWORD = "db2admin";
 
     @Autowired
     private  Environment env;
@@ -57,8 +55,8 @@ public class DbConfigLocal {
         dbToynet.setPortNumber(50000);
         dbToynet.setDatabaseName("DBTOYNET");
         dbToynet.setDriverType(4);
-        dbToynet.setUser("db2inst1");
-        dbToynet.setPassword("db2admin");
+        dbToynet.setUser(USER);
+        dbToynet.setPassword(PASSWORD);
         conn.setDataSource(dbToynet, "jdbc/dbtoynet");
         log.info("Datasource initialized successfully: jdbc/dbtoynet");
         DB2SimpleDataSource dblexxtaps = new DB2SimpleDataSource();
@@ -66,8 +64,8 @@ public class DbConfigLocal {
         dblexxtaps.setPortNumber(50000);
         dblexxtaps.setDatabaseName("USRLOGON");
         dblexxtaps.setDriverType(4);
-        dblexxtaps.setUser("db2inst1");
-        dblexxtaps.setPassword("db2admin");
+        dblexxtaps.setUser(USER);
+        dblexxtaps.setPassword(PASSWORD);
         conn.setDataSource(dblexxtaps, "jdbc/lexxtaps");
         log.info("Datasource initialized successfully: jdbc/lexxtaps");
         DB2SimpleDataSource usrLogon = new DB2SimpleDataSource();
@@ -75,8 +73,8 @@ public class DbConfigLocal {
         usrLogon.setPortNumber(50000);
         usrLogon.setDatabaseName("USRLOGON");
         usrLogon.setDriverType(4);
-        usrLogon.setUser("db2inst1");
-        usrLogon.setPassword("db2admin");
+        usrLogon.setUser(USER);
+        usrLogon.setPassword(PASSWORD);
         conn.setDataSource(usrLogon, "jdbc/usrlogon");
         log.info("Datasource initialized successfully: jdbc/usrlogon");
     }

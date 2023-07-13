@@ -2,5 +2,5 @@ projectKey=MKFormularios
 serverUrl=http://scjetsrvt:9000
 serverVersion=9.9.1.69595
 dashboardUrl=http://scjetsrvt:9000/dashboard?id=MKFormularios
-ceTaskId=AYlKjD8-aKVvFA6-5j2l
-ceTaskUrl=http://scjetsrvt:9000/api/ce/task?id=AYlKjD8-aKVvFA6-5j2l
+ceTaskId=AYlROJCFgLjU2bLlbWBX
+ceTaskUrl=http://scjetsrvt:9000/api/ce/task?id=AYlROJCFgLjU2bLlbWBX
