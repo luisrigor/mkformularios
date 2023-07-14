@@ -100,7 +100,7 @@ class PlanControllerTest {
                 .andExpect(jsonPath("$.car[0].changedBy").value("user"));
     }
 
-   /* @Test
+    @Test
     void whenUploadPlanThenReturnSaved() throws Exception {
         String accessToken = generatedToken;
         byte[] fileContent = "Test file content".getBytes(StandardCharsets.UTF_8);
@@ -111,14 +111,14 @@ class PlanControllerTest {
         when(planService.uploadPlan(any(), any(), any()))
                 .thenReturn(Arrays.asList("saved"));
 
-        String uri = BASE_REQUEST_MAPPING+PVMEnpoints.PLAN_UPLOAD+"?yearPlanUpload=1";
+        String uri = BASE_REQUEST_MAPPING+PVMEnpoints.PLAN_UPLOAD+"?yearUploadPlan=1";
         ResultActions response = mvc.perform(MockMvcRequestBuilders.multipart(uri)
                         .file(file)
                 .header("accessToken", accessToken));
 
                 response
                 .andExpect(status().is2xxSuccessful());
-    }*/
+    }
 
     @Test
     void whenDownloadPlanThenReturnInfo() throws Exception {
