@@ -38,7 +38,7 @@ public class DbConfigLocal {
 
     private final DataSourceRoutingLocal dataSourceRoutingLocal;
     private final String USER = "db2inst1";
-    private final String PASSWORD = "db2admin";
+    private final String PAS = "db2admin";
 
     @Autowired
     private  Environment env;
@@ -56,7 +56,7 @@ public class DbConfigLocal {
         dbToynet.setDatabaseName("DBTOYNET");
         dbToynet.setDriverType(4);
         dbToynet.setUser(USER);
-        dbToynet.setPassword(PASSWORD);
+        dbToynet.setPassword(PAS);
         conn.setDataSource(dbToynet, "jdbc/dbtoynet");
         log.info("Datasource initialized successfully: jdbc/dbtoynet");
         DB2SimpleDataSource dblexxtaps = new DB2SimpleDataSource();
@@ -65,7 +65,7 @@ public class DbConfigLocal {
         dblexxtaps.setDatabaseName("USRLOGON");
         dblexxtaps.setDriverType(4);
         dblexxtaps.setUser(USER);
-        dblexxtaps.setPassword(PASSWORD);
+        dblexxtaps.setPassword(PAS);
         conn.setDataSource(dblexxtaps, "jdbc/lexxtaps");
         log.info("Datasource initialized successfully: jdbc/lexxtaps");
         DB2SimpleDataSource usrLogon = new DB2SimpleDataSource();
@@ -74,7 +74,7 @@ public class DbConfigLocal {
         usrLogon.setDatabaseName("USRLOGON");
         usrLogon.setDriverType(4);
         usrLogon.setUser(USER);
-        usrLogon.setPassword(PASSWORD);
+        usrLogon.setPassword(PAS);
         conn.setDataSource(usrLogon, "jdbc/usrlogon");
         log.info("Datasource initialized successfully: jdbc/usrlogon");
     }
