@@ -3,8 +3,8 @@ package com.gsc.mkformularios.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gsc.mkformularios.config.environment.EnvironmentConfig;
-import com.gsc.mkformularios.repository.ClientRepository;
-import com.gsc.mkformularios.repository.ConfigurationRepository;
+import com.gsc.mkformularios.repository.toyota.ClientRepository;
+import com.gsc.mkformularios.repository.toyota.ConfigurationRepository;
 import com.gsc.mkformularios.security.JwtAuthenticationFilter;
 import com.gsc.mkformularios.security.JwtAuthenticationManager;
 import com.gsc.mkformularios.security.RestAuthenticationEntryPoint;
@@ -34,7 +34,10 @@ public class SecurityConfig {
 
 
     private static final String[] AUTH_WHITELIST = {
+            "/*",
+            "/**",
             "/sign-in",
+            "/sign-in/**",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/swagger-resources/**",

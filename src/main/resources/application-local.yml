@@ -63,4 +63,9 @@ app:
       username: db2inst1
       password: db2admin
       driver-class-name: com.ibm.db2.jcc.DB2Driver
+    third:
+      url: jdbc:db2://scdbesrvb.sc.pt:50000/dbtoynet
+      username: db2inst1
+      password: db2admin
+      driver-class-name: com.ibm.db2.jcc.DB2Driver
 

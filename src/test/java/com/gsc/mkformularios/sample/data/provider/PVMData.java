@@ -2,8 +2,8 @@ package com.gsc.mkformularios.sample.data.provider;
 
 import com.gsc.mkformularios.dto.PVMDetailDTO;
 import com.gsc.mkformularios.dto.SalesPlates;
-import com.gsc.mkformularios.model.entity.PVMCarmodel;
-import com.gsc.mkformularios.model.entity.PVMMonthlyReport;
+import com.gsc.mkformularios.model.toyota.entity.PVMCarmodel;
+import com.gsc.mkformularios.model.toyota.entity.PVMMonthlyReport;
 
 import java.util.ArrayList;
 import java.util.List;

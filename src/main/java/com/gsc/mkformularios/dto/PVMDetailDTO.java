@@ -1,7 +1,7 @@
 package com.gsc.mkformularios.dto;
 
-import com.gsc.mkformularios.model.entity.PVMCarmodel;
-import com.gsc.mkformularios.model.entity.PVMMonthlyReport;
+import com.gsc.mkformularios.model.toyota.entity.PVMCarmodel;
+import com.gsc.mkformularios.model.toyota.entity.PVMMonthlyReport;
 import lombok.*;
 
 import java.util.List;

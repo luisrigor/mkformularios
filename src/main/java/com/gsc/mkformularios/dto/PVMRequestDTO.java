@@ -14,4 +14,5 @@ public class PVMRequestDTO {
     private int year;
     private int month;
     private String cancelReasons;
+    private String oidNet;
 }

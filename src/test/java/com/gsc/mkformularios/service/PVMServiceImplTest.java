@@ -1,12 +1,12 @@
 package com.gsc.mkformularios.service;
 
 
-import com.gsc.mkformularios.config.datasource.DbContext;
+import com.gsc.mkformularios.config.datasource.toyota.DbContext;
 import com.gsc.mkformularios.constants.AppProfile;
 import com.gsc.mkformularios.dto.PVMDetailDTO;
-import com.gsc.mkformularios.model.entity.PVMMonthlyReport;
-import com.gsc.mkformularios.repository.PVMCarmodelRepository;
-import com.gsc.mkformularios.repository.PVMMonthlyReportRepository;
+import com.gsc.mkformularios.model.toyota.entity.PVMMonthlyReport;
+import com.gsc.mkformularios.repository.toyota.PVMCarmodelRepository;
+import com.gsc.mkformularios.repository.toyota.PVMMonthlyReportRepository;
 import com.gsc.mkformularios.sample.data.provider.PVMData;
 import com.gsc.mkformularios.sample.data.provider.SecurityData;
 import com.gsc.mkformularios.security.UserPrincipal;

@@ -1,7 +1,7 @@
 package com.gsc.mkformularios.sample.data.provider;
 
 import com.gsc.mkformularios.constants.AppProfile;
-import com.gsc.mkformularios.model.entity.LoginKey;
+import com.gsc.mkformularios.model.toyota.entity.LoginKey;
 import com.gsc.mkformularios.security.UserPrincipal;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
