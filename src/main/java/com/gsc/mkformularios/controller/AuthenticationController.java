@@ -23,7 +23,7 @@ public class AuthenticationController {
     private final TokenProvider tokenProvider;
 
     @PostMapping("/sign-in/{appId}")
-    public UserDTO createAuthenticationToken(@RequestHeader("loginToken") String loginToken, @PathVariable String appId){
+    public UserDTO createAuthenticationToken(@RequestHeader("loginToken") String loginToken, @PathVariable String appId) {
 
         loginToken = appId+"|||"+loginToken;
         Authentication authentication = authenticationManager.authenticate(new JwtAuthenticationToken(loginToken));

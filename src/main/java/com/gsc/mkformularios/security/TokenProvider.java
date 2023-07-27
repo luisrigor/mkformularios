@@ -26,6 +26,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.gsc.mkformularios.constants.DATAConstants.APP_LEXUS;
+import static com.gsc.mkformularios.constants.DATAConstants.APP_TOYOTA;
+
 @Service
 public class TokenProvider {
 
@@ -56,9 +59,9 @@ public class TokenProvider {
 
    public String createToken(Authentication authentication, String appId) throws AuthenticationException {
       UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-      if(appId.equals("13")) {
+      if(appId.equals(String.valueOf(APP_TOYOTA))) {
          userPrincipal.setOidNet("SC00010001");
-      } else if (appId.equals("10053")) {
+      } else if (appId.equals(String.valueOf(APP_LEXUS))) {
          userPrincipal.setOidNet("SC00010002");
       }
 

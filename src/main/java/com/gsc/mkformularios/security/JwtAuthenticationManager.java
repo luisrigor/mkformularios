@@ -46,7 +46,7 @@ public class JwtAuthenticationManager implements AuthenticationManager {
         }
 
         String loginToken = authentication.getPrincipal() != null ? authentication.getPrincipal().toString() : null;
-        String tokenParts[] = loginToken.split("\\|\\|\\|");
+        String tokenParts[] = loginToken != null ? loginToken.split("\\|\\|\\|") : new String[0];
         loginToken = tokenParts[1];
 
         if (!StringUtils.hasText(loginToken)) {
@@ -65,6 +65,7 @@ public class JwtAuthenticationManager implements AuthenticationManager {
         }
 
         AuthenticationExtraResponse authenticationExtra = environmentConfig.getAuthenticationInvoker().authenticationExtra(parts[0], parts[1], Integer.parseInt(tokenParts[0]));
+
         if (!authenticationExtra.getCode().equals("0") || authenticationExtra.getUser() == null) {
             throw new BadCredentialsException("Bad credentials");
         }
@@ -78,7 +79,7 @@ public class JwtAuthenticationManager implements AuthenticationManager {
             throw new AuthenticationServiceException("No permissions");
         }
 
-        UserPrincipal authUser = new UserPrincipal(userId, roles, CLIENT_ID);
+        UserPrincipal authUser = new UserPrincipal(userId, roles, Long.parseLong(tokenParts[0]));
         authUser.setOidDealerParent(user.getDealerParent().getObjectId());
         return JwtAuthenticationToken.authenticated(authUser, Collections.emptyList());
     }
