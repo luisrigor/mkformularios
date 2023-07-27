@@ -37,6 +37,8 @@ import java.util.Map;
 public class DbConfigLocal {
 
     private final DataSourceRoutingLocal dataSourceRoutingLocal;
+    private final String USER = "db2inst1";
+    private final String PAS = "db2admin";
 
     @Autowired
     private  Environment env;
@@ -53,18 +55,36 @@ public class DbConfigLocal {
         dbToynet.setPortNumber(50000);
         dbToynet.setDatabaseName("DBTOYNET");
         dbToynet.setDriverType(4);
-        dbToynet.setUser("db2inst1");
-        dbToynet.setPassword("db2admin");
+        dbToynet.setUser(USER);
+        dbToynet.setPassword(PAS);
         conn.setDataSource(dbToynet, "jdbc/dbtoynet");
         log.info("Datasource initialized successfully: jdbc/dbtoynet");
+        DB2SimpleDataSource dblexxtaps = new DB2SimpleDataSource();
+        dblexxtaps.setServerName("scdbesrvb.sc.pt");
+        dblexxtaps.setPortNumber(50000);
+        dblexxtaps.setDatabaseName("USRLOGON");
+        dblexxtaps.setDriverType(4);
+        dblexxtaps.setUser(USER);
+        dblexxtaps.setPassword(PAS);
+        conn.setDataSource(dblexxtaps, "jdbc/lexxtaps");
+        log.info("Datasource initialized successfully: jdbc/lexxtaps");
         DB2SimpleDataSource usrLogon = new DB2SimpleDataSource();
-        usrLogon.setServerName("scdbesrva.sc.pt");
+        usrLogon.setServerName("scdbesrvb.sc.pt");
         usrLogon.setPortNumber(50000);
-        usrLogon.setDatabaseName("TOYXTAPS");
+        usrLogon.setDatabaseName("USRLOGON");
         usrLogon.setDriverType(4);
-        usrLogon.setUser("db2inst1");
-        usrLogon.setPassword("db2admin");
-        conn.setDataSource(usrLogon, "jdbc/toyxtaps");
+        usrLogon.setUser(USER);
+        usrLogon.setPassword(PAS);
+        conn.setDataSource(usrLogon, "jdbc/usrlogon");
+        log.info("Datasource initialized successfully: jdbc/usrlogon");
+        DB2SimpleDataSource toyaps = new DB2SimpleDataSource();
+        toyaps.setServerName("scdbesrva.sc.pt");
+        toyaps.setPortNumber(50000);
+        toyaps.setDatabaseName("TOYXTAPS");
+        toyaps.setDriverType(4);
+        toyaps.setUser("db2inst1");
+        toyaps.setPassword("db2admin");
+        conn.setDataSource(toyaps, "jdbc/toyxtaps");
         log.info("Datasource initialized successfully: jdbc/toyxtaps");
     }
 
