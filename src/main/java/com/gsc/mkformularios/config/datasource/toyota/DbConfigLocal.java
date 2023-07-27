@@ -77,6 +77,15 @@ public class DbConfigLocal {
         usrLogon.setPassword(PAS);
         conn.setDataSource(usrLogon, "jdbc/usrlogon");
         log.info("Datasource initialized successfully: jdbc/usrlogon");
+        DB2SimpleDataSource toyaps = new DB2SimpleDataSource();
+        toyaps.setServerName("scdbesrva.sc.pt");
+        toyaps.setPortNumber(50000);
+        toyaps.setDatabaseName("TOYXTAPS");
+        toyaps.setDriverType(4);
+        toyaps.setUser("db2inst1");
+        toyaps.setPassword("db2admin");
+        conn.setDataSource(toyaps, "jdbc/toyxtaps");
+        log.info("Datasource initialized successfully: jdbc/toyxtaps");
     }
 
     @Primary

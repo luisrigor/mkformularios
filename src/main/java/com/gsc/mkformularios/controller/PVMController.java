@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -88,5 +89,12 @@ public class PVMController {
 
 
 
+    @PostMapping(PVMEnpoints.PVM_EXPORT_MONTH)
+    public ResponseEntity<String> getPVMExcelByMonth(@AuthenticationPrincipal UserPrincipal userPrincipal, HttpServletResponse response,
+                                                     @RequestBody PVMRequestDTO pvmRequestDTO, @RequestParam String month) {
+//        log.info("Client id " +userPrincipal.getClientId());
+        PVMService.getPVMExcelByMonth(pvmRequestDTO, month,userPrincipal, response);
+        return  ResponseEntity.status(HttpStatus.OK).body("excel generated");
+    }
 
 }

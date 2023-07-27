@@ -2,6 +2,8 @@ package com.gsc.mkformularios.model.toyota.entity;
 
 
 import com.gsc.mkformularios.dto.MapTypesDTO;
+import com.gsc.mkformularios.dto.PVMCarmodelForecast;
+
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,6 +25,28 @@ import java.util.Date;
                         columns = {
                                 @ColumnResult(name = "ID", type = Integer.class),
                                 @ColumnResult(name = "TYPE", type = String.class)
+                        }
+                )
+        }
+)
+@SqlResultSetMapping(
+        name = "GetCarModelsForecastMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = PVMCarmodelForecast.class,
+                        columns = {
+                                @ColumnResult(name = "ID", type = Integer.class),
+                                @ColumnResult(name = "NAME", type = String.class),
+                                @ColumnResult(name = "TYPE", type = String.class),
+                                @ColumnResult(name = "ACTIVE", type = String.class),
+                                @ColumnResult(name = "CREATED_BY", type = String.class),
+                                @ColumnResult(name = "DT_CREATED", type = LocalDateTime.class),
+                                @ColumnResult(name = "CHANGED_BY", type = String.class),
+                                @ColumnResult(name = "DT_CHANGED", type = LocalDateTime.class),
+                                @ColumnResult(name = "DT_FROM", type = LocalDate.class),
+                                @ColumnResult(name = "DT_TO", type = LocalDate.class),
+                                @ColumnResult(name = "EXPORT_ORDER", type = Integer.class),
+                                @ColumnResult(name = "FORECAST", type = Integer.class)
                         }
                 )
         }

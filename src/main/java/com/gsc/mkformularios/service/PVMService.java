@@ -10,6 +10,9 @@ import com.sc.commons.user.GSCUser;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
 public interface PVMService {
     PVMGetDTO getPVM(PVMRequestDTO pvmRequestDTO, UserPrincipal userPrincipal);
     PVMDetailDTO getPVMDetail(int idPVM, UserPrincipal userPrincipal);
@@ -20,4 +23,5 @@ public interface PVMService {
     void saveReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS);
     void sendReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS);
     void requestToChange(UserPrincipal userPrincipal, String cancelReasons, String idPVMS);
+    void getPVMExcelByMonth(PVMRequestDTO pvmRequestDTO, String pvmMonth, UserPrincipal userPrincipal, HttpServletResponse response);
 }

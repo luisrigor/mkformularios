@@ -7,6 +7,12 @@ import com.gsc.mkformularios.constants.AppProfile;
 import com.gsc.mkformularios.dto.*;
 import com.gsc.mkformularios.exceptions.CreatePVMException;
 import com.gsc.mkformularios.exceptions.GetPVMException;
+import com.gsc.mkformularios.config.datasource.toyota.DbClient;
+import com.gsc.mkformularios.config.datasource.toyota.DbContext;
+import com.gsc.mkformularios.constants.AppProfile;
+import com.gsc.mkformularios.dto.PVMDetailDTO;
+import com.gsc.mkformularios.dto.PVMRequestDTO;
+import com.gsc.mkformularios.dto.SalesPlates;
 import com.gsc.mkformularios.model.toynet.entity.LexusRetailer;
 import com.gsc.mkformularios.model.toynet.entity.ToyotaRetailer;
 import com.gsc.mkformularios.model.toyota.entity.PVMCarmodel;
@@ -20,6 +26,12 @@ import com.gsc.mkformularios.security.UserPrincipal;
 import com.gsc.mkformularios.service.PVMService;
 import com.gsc.mkformularios.utils.DealersUtils;
 import com.gsc.mkformularios.utils.UsrlogonUtil;
+import com.gsc.mkformularios.repository.toyota.PVMMonthlyReportRepository;
+import com.gsc.mkformularios.security.UserPrincipal;
+import com.gsc.mkformularios.service.PVMService;
+import com.gsc.mkformularios.service.impl.pvm.PVM1MonthReport;
+import com.gsc.mkformularios.service.impl.pvm.PVM3MonthReport;
+import com.rg.dealer.Dealer;
 import com.sc.commons.comunications.Mail;
 import com.sc.commons.exceptions.SCErrorException;
 import com.sc.commons.utils.DateTimerTasks;
@@ -32,6 +44,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.gsc.mkformularios.constants.DATAConstants.APP_LEXUS;
@@ -51,8 +74,10 @@ public class PVMServiceImpl implements PVMService {
     private final PVMMonthlyReportDetailRepository pvmMonthlyReportDetailRepository;
     private final DealersUtils dealersUtils;
     private final UsrlogonUtil usrlogonUtil;
+    private final PVM3MonthReport pvm3MonthReport;
+    private final PVM1MonthReport pvm1MonthReport;
 
-    public void setDataSourceContext(Long client) {
+    public void setDataSourceContext(Long client){
         if (client == APP_LEXUS) {
             dbContext.setBranchContext(DbClient.DB_LEXUS);
         } else if (client == APP_TOYOTA) {
@@ -283,4 +308,47 @@ public class PVMServiceImpl implements PVMService {
         }
     }
 
+    @Override
+    public void getPVMExcelByMonth(PVMRequestDTO pvmRequestDTO, String pvmMonth, UserPrincipal userPrincipal, HttpServletResponse response) {
+        //TODO remove this user init
+        userPrincipal = new UserPrincipal(null, null, null);
+        userPrincipal.setCaMember(false);
+        int year	= pvmRequestDTO.getYear();
+        int month	= pvmRequestDTO.getMonth();
+        String oidNet = StringTasks.cleanString(pvmRequestDTO.getOidNet(), "");
+        if (year==0 || month==0)
+            return;
+
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String filename = "Previsão_de_Vendas_e_Matrículas_(" +DateTimerTasks.ptMonths[month-1]+ ").xls";
+        String headerValue = "attachment; filename="+filename;
+        response.setHeader(headerKey, headerValue);
+
+        try {
+            HSSFWorkbook oHSSFWorkbook = null;
+
+            if ("1MONTH".equals(pvmMonth)) {
+                if (oidNet.equals(Dealer.OID_NET_TOYOTA))	{
+                    oHSSFWorkbook = pvm1MonthReport.execute(year, month, "Toyota", userPrincipal.isCAMember());
+                } else if (oidNet.equals(Dealer.OID_NET_LEXUS))	{
+                    oHSSFWorkbook = pvm1MonthReport.execute(year, month, "Lexus", userPrincipal.isCAMember());
+                }
+            } else if ("3MONTH".equals(pvmMonth)) {
+                if (oidNet.equals(Dealer.OID_NET_TOYOTA))	{
+                    oHSSFWorkbook = pvm3MonthReport.executeForToyota(year, month, userPrincipal.isCAMember());
+                } else if (oidNet.equals(Dealer.OID_NET_LEXUS))	{
+                    oHSSFWorkbook = pvm3MonthReport.executeForLexus(year, month, userPrincipal.isCAMember());
+                }
+            }
+
+            ServletOutputStream outputStream = response.getOutputStream();
+            oHSSFWorkbook.write(outputStream);
+            oHSSFWorkbook.close();
+            outputStream.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating file", e);
+        }
+    }
 }

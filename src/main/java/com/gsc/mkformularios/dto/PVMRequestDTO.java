@@ -24,4 +24,5 @@ public class PVMRequestDTO {
 
         return filter.toString();
     }
+    private String oidNet;
 }

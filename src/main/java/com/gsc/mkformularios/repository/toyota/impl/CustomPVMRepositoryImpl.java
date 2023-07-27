@@ -14,6 +14,20 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Set;
+import com.gsc.mkformularios.config.AliasToEntityMapResultTransformer;
+import com.gsc.mkformularios.dto.PVMCarmodelForecast;
+import com.gsc.mkformularios.dto.SalesPlates;
+import com.gsc.mkformularios.model.toyota.entity.PVMMonthlyReport;
+import com.gsc.mkformularios.repository.toyota.CustomPVMRepository;
+import com.rg.dealer.Dealer;
+import com.sc.commons.exceptions.SCErrorException;
+import org.hibernate.query.internal.NativeQueryImpl;
+
+import javax.persistence.*;
+import java.sql.Connection;
+import java.sql.ResultSetMetaData;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class CustomPVMRepositoryImpl implements CustomPVMRepository {
 
@@ -44,6 +58,29 @@ public class CustomPVMRepositoryImpl implements CustomPVMRepository {
         }
     }
 
+    public List<Map<String,Object>> getPVMMonthReportPlates(String platesSql) {
+        Query query = em.createNativeQuery(platesSql);
+
+
+        NativeQueryImpl nativeQuery = (NativeQueryImpl) query;
+        nativeQuery.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
+        List<Map<String,Object>> result = nativeQuery.getResultList();
+
+        return result;
+    }
+
+    @Override
+    public List<PVMCarmodelForecast> getPVMCarModelsForecasts(String year, String month, String dtFrom) {
+        String SQL = " SELECT CM.*, CYF.FORECAST FROM PVM_CARMODEL CM " +
+                "LEFT JOIN PVM_CARMODEL_YEAR_FORECASTS CYF ON CM.ID = CYF.ID_CARMODEL " +
+                "AND CYF.YEAR = "+year+" AND CYF.MONTH = "+month+" " +
+                "WHERE DT_FROM <= date('" + dtFrom + "') AND VALUE(DT_TO, date('9999-12-31')) >= date('" + year + "-" + month + "-01') order by TYPE, EXPORT_ORDER, NAME ";
+
+        Query query = em.createNativeQuery(SQL, "GetCarModelsForecastMapping");
+
+        List<PVMCarmodelForecast> carmodelForecasts = query.getResultList();
+        return carmodelForecasts;
+    }
 
 
     private String buildPVMQuery() {
@@ -156,5 +193,4 @@ public class CustomPVMRepositoryImpl implements CustomPVMRepository {
 
         return sql.toString();
     }
-
 }

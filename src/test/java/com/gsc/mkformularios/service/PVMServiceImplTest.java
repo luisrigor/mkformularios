@@ -16,6 +16,8 @@ import com.gsc.mkformularios.repository.toynet.LexusRetailerRepository;
 import com.gsc.mkformularios.repository.toynet.ToyotaRetailerRepository;
 import com.gsc.mkformularios.repository.toyota.PVMCarmodelRepository;
 import com.gsc.mkformularios.repository.toyota.PVMMonthlyReportDetailRepository;
+import com.gsc.mkformularios.model.toyota.entity.PVMMonthlyReport;
+import com.gsc.mkformularios.repository.toyota.PVMCarmodelRepository;
 import com.gsc.mkformularios.repository.toyota.PVMMonthlyReportRepository;
 import com.gsc.mkformularios.sample.data.provider.PVMData;
 import com.gsc.mkformularios.sample.data.provider.SecurityData;

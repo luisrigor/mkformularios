@@ -24,4 +24,6 @@ public interface PVMEnpoints {
     String PREVISION_MONTH = "/prevision-month";
 
 
+    String PVM_DETAIL = "/detail";
+    String PVM_EXPORT_MONTH = "/export-by-month";
 }
