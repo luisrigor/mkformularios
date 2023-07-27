@@ -1,6 +1,6 @@
 package com.gsc.mkformularios.config;
 
-import com.gsc.as400.initialization.AS400ConnectionPooling;
+//import com.gsc.as400.initialization.AS400ConnectionPooling;
 import org.apache.log4j.PropertyConfigurator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

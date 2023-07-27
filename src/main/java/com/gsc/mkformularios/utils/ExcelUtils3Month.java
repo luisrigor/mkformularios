@@ -166,7 +166,12 @@ public class ExcelUtils3Month {
         cell.setCellStyle(borderStyleCenterYellowFilled);
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+2, (short)colToPrint, "Orç.", (short)-1);
         cell.setCellStyle(borderStyleCenterBlueFilled);
-        currentSheet.addMergedRegion(new CellRangeAddress(startRow+1,  startRow+1, colToPrint-1, colToPrint));
+        try {
+            currentSheet.addMergedRegion(new CellRangeAddress(startRow+1,  startRow+1, colToPrint-1, colToPrint));
+        } catch (Exception e) {
+            log.error("Error merging cells", e);
+        }
+
         colToPrint++;
 
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+1, (short)colToPrint, ptMonths[Integer.parseInt(month)+1].substring(0,3), (short)3);
@@ -178,7 +183,12 @@ public class ExcelUtils3Month {
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+1, (short)colToPrint, ptMonths[Integer.parseInt(month)+1].substring(0,3), (short)3);
         cell.setCellStyle(borderStyleCenterYellowFilled);
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+2, (short)colToPrint, "Orç.", (short)-1);
-        currentSheet.addMergedRegion(new CellRangeAddress(startRow+1,  startRow+1, colToPrint-1, colToPrint));
+        try {
+            currentSheet.addMergedRegion(new CellRangeAddress(startRow+1,  startRow+1, colToPrint-1, colToPrint));
+        } catch (Exception e) {
+            log.error("Error merging cells", e);
+        }
+
         cell.setCellStyle(borderStyleCenterBlueFilled);
         colToPrint++;
 
@@ -191,7 +201,12 @@ public class ExcelUtils3Month {
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+1, (short)colToPrint, ptMonths[Integer.parseInt(month)+2].substring(0,3), (short)3);
         cell.setCellStyle(borderStyleCenterYellowFilled);
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+2, (short)colToPrint, "Orç.", (short)-1);
-        currentSheet.addMergedRegion(new CellRangeAddress(startRow+1,  startRow+1, colToPrint-1, colToPrint));
+        try {
+            currentSheet.addMergedRegion(new CellRangeAddress(startRow+1,  startRow+1, colToPrint-1, colToPrint));
+        } catch (Exception e) {
+            log.error("Error merging cells", e);
+        }
+
         cell.setCellStyle(borderStyleCenterBlueFilled);
         colToPrint++;
     }
@@ -233,7 +248,7 @@ public class ExcelUtils3Month {
                 formula.append(")");
 
                 cell = ExcelUtils3Month.createCell(currentSheet , currentRow, (short)i, "", (short)-1);
-                cell.setCellFormula(formula.toString());
+//                cell.setCellFormula(formula.toString());
 
                 cell.setCellStyle(borderStyleCenterYellowFilled);
 
@@ -686,7 +701,11 @@ public class ExcelUtils3Month {
         cell.setCellStyle(borderStyleCenterYellowFilled);
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+2, (short)colToPrint, "Dif", (short)-1);
         cell.setCellStyle(borderStyleCenterBlueFilled);
-        currentSheet.addMergedRegion(new CellRangeAddress(startRow + 1, startRow + 1, (short) (colToPrint - 2), (short) colToPrint));
+        try {
+            currentSheet.addMergedRegion(new CellRangeAddress(startRow + 1, startRow + 1, (short) (colToPrint - 2), (short) colToPrint));
+        }catch (Exception e) {
+            log.error("Error merging cells", e);
+        }
         colToPrint++;
 
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+1, (short)colToPrint, ptMonths[Integer.parseInt(month)+1].substring(0,3), (short)3);
@@ -698,7 +717,11 @@ public class ExcelUtils3Month {
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+1, (short)colToPrint, ptMonths[Integer.parseInt(month)+1].substring(0,3), (short)3);
         cell.setCellStyle(borderStyleCenterYellowFilled);
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+2, (short)colToPrint, "Mat", (short)-1);
-        currentSheet.addMergedRegion(new CellRangeAddress(startRow + 1, startRow + 1, (short) (colToPrint - 1), (short) colToPrint));
+        try {
+            currentSheet.addMergedRegion(new CellRangeAddress(startRow + 1, startRow + 1, (short) (colToPrint - 1), (short) colToPrint));
+        }catch (Exception e) {
+            log.error("Error merging cells", e);
+        }
         colToPrint++;
 
         cell = ExcelUtils3Month.createCell(currentSheet, startRow+1, (short)colToPrint, ptMonths[Integer.parseInt(month)+1].substring(0,3), (short)3);
@@ -1231,7 +1254,7 @@ public class ExcelUtils3Month {
         formula.append(")");
 
         HSSFCell cell = ExcelUtils3Month.createCell(currentSheet , currentRow, (short)(colToPrint), "", (short)-1);
-        cell.setCellFormula(formula.toString());
+//        cell.setCellFormula(formula.toString());
         cell.setCellStyle(borderStyleCenterYellowFilled);
 
         formula = new StringBuffer("'Tot. Matríc.'!" + ExcelUtils3Month.EXCEL_COLUMNS[colToPrint + matColumn] + (currentRow+1));

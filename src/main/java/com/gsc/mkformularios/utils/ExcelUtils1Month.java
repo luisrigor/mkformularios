@@ -93,7 +93,7 @@ public class ExcelUtils1Month {
             row = sheet.createRow(rowNumber);
 
         HSSFCell cell = row.createCell(column);
-        if(value!=null&&value.equals("null"))
+        if(value!=null&&!value.equals("null"))
             cell.setCellValue(value);
         if (columnWidth>0)
             sheet.setColumnWidth(column, (short) (columnWidth * 256));
