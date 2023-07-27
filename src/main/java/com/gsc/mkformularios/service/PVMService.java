@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface PVMService {
-    PVMDetailDTO getPVM(PVMRequestDTO pvmRequestDTO, UserPrincipal userPrincipal);
+    PVMGetDTO getPVM(PVMRequestDTO pvmRequestDTO, UserPrincipal userPrincipal);
     PVMDetailDTO getPVMDetail(int idPVM, UserPrincipal userPrincipal);
     Boolean newPVM(UserPrincipal userPrincipal, int subDealer);
 
