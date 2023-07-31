@@ -14,6 +14,8 @@ import com.rg.dealer.Dealer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,13 +67,19 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public Boolean saveModel(UserPrincipal userPrincipal, ModelDTO model,int idModel) {
         this.setDataSourceContext(userPrincipal.getClientId());
+        String userStamp = userPrincipal.getUsername().split("\\|\\|")[0]+"||"+userPrincipal.getUsername().split("\\|\\|")[1];
         try{
+            PVMCarmodel oPVMCarmodel = null;
+            boolean isNew = true;
             if (idModel > 0) {
-                PVMCarmodel oPVMCarmodel = pvmCarmodelRepository.findById(idModel).get();
+                oPVMCarmodel = pvmCarmodelRepository.findById(idModel).orElseThrow(()->new RuntimeException("Id not found"));
+                isNew = false;
             }else {
-                PVMCarmodel carModel = saveCarModel(model);
-                pvmCarmodelRepository.save(carModel);
+                oPVMCarmodel = new PVMCarmodel();
             }
+
+            PVMCarmodel carModel = saveCarModel(oPVMCarmodel, model, userStamp, isNew);
+            pvmCarmodelRepository.save(carModel);
         }catch (Exception e){
             log.error("CarModel,Erro ao gerir Modelos" + e.getMessage());
             throw new RuntimeException("Error saving model", e);
@@ -79,14 +87,21 @@ public class ModelServiceImpl implements ModelService {
         return true;
     }
 
-    public PVMCarmodel saveCarModel(ModelDTO model){
-        PVMCarmodel  oPVMCarmodel = new PVMCarmodel();
+    public PVMCarmodel saveCarModel(PVMCarmodel  oPVMCarmodel, ModelDTO model, String userStamp, boolean isNew){
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
         oPVMCarmodel.setName(model.getModel());
-        oPVMCarmodel.setActive("S");
         oPVMCarmodel.setType(model.getType());
+        oPVMCarmodel.setActive("S");
         oPVMCarmodel.setDtFrom(model.getFrom());
         oPVMCarmodel.setDtTo(model.getTo());
         oPVMCarmodel.setExportOrder(model.getOrder());
+        if(isNew) {
+            oPVMCarmodel.setCreatedBy(userStamp);
+            oPVMCarmodel.setDtCreated(ts.toLocalDateTime());
+        } else {
+            oPVMCarmodel.setChangedBy(userStamp);
+            oPVMCarmodel.setDtChanged(ts.toLocalDateTime());
+        }
         return oPVMCarmodel;
     }
 }
