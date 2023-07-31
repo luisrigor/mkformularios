@@ -97,4 +97,10 @@ public class PVMController {
         return  ResponseEntity.status(HttpStatus.OK).body("excel generated");
     }
 
+    @PostMapping(PVMEnpoints.GET_OID_NET)
+    public ResponseEntity<String> getOidNet(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        String oidNet = PVMService.getOidNet(userPrincipal);
+        return  ResponseEntity.status(HttpStatus.OK).body(oidNet);
+    }
+
 }

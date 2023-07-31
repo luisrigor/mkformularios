@@ -348,4 +348,9 @@ public class PVMServiceImpl implements PVMService {
             throw new RuntimeException("Error generating file", e);
         }
     }
+
+    @Override
+    public  String getOidNet(UserPrincipal userPrincipal) {
+        return userPrincipal.getOidNet();
+    }
 }

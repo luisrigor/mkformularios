@@ -25,4 +25,5 @@ public interface PVMEnpoints {
 
 
     String PVM_EXPORT_MONTH = "/export-by-month";
+    String GET_OID_NET = "/oid-net";
 }

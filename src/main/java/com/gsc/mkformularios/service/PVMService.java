@@ -24,4 +24,5 @@ public interface PVMService {
     void sendReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS);
     void requestToChange(UserPrincipal userPrincipal, String cancelReasons, String idPVMS);
     void getPVMExcelByMonth(PVMRequestDTO pvmRequestDTO, String pvmMonth, UserPrincipal userPrincipal, HttpServletResponse response);
+    String getOidNet(UserPrincipal userPrincipal);
 }
