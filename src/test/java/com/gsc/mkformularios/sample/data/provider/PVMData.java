@@ -299,4 +299,68 @@ public class PVMData {
                 .forecast(forecast)
                 .build();
     }
+
+    public static String getContractSql() {
+        return  "\n" +
+                "WITH DEALERS (OID_DEALER, DEALERCODE, DEALER) AS \n" +
+                "(VALUES\n" +
+                "('SC00020003', '61', 'A. M. Gonçalves II LDA'), \n" +
+                "('SC03660056', '42', 'AMF - António Martins & Filhos, Lda'), \n" +
+                "('SC00020008', '22', 'Aruncauto, S.A.'), \n" +
+                "('SC00020010', '01', 'Auto Açoreana'), \n" +
+                "('SC00020012', '45', 'Auto Imperial de Bragança, Lda.'), \n" +
+                "('SC05080001', '', 'Auto Meli (Teste A2D2)'), \n" +
+                "('SC00020032', '13', 'Caetano - Auto (Algarve)'), \n" +
+                "('SC00020040', '12', 'Caetano - Auto (Aveiro)'), \n" +
+                "('SC03780004', '46', 'Caetano - Auto (Cascais)'), \n" +
+                "('SC00020035', '08', 'Caetano - Auto (Centro Litoral)'), \n" +
+                "('SC00020044', '10', 'Caetano - Auto (Centro Sul)'), \n" +
+                "('SC00020052', '50', 'Caetano - Auto (Lisboa)'), \n" +
+                "('SC00020069', '06', 'Caetano - Auto (Minho)'), \n" +
+                "('SC00020073', '24', 'Caetano - Auto (Porto)'), \n" +
+                "('SC03980001', '55', 'Caetano - Auto (Santa Maria da Feira)'), \n" +
+                "('SC00020083', '27', 'Caetano - Auto (Setúbal)'), \n" +
+                "('SC04420014', '80', 'Caetano - Auto (Sintra)'), \n" +
+                "('SC03720002', '43', 'Caetano City, S.A.'), \n" +
+                "('SC00020020', '91', 'Evoramotores Reparações Auto'), \n" +
+                "('SC00020021', '05', 'José Cândido Chícharo & Filho, Lda.'), \n" +
+                "('SC04100044', '74', 'M.Coutinho Motors II - Comércio de Automóveis, SA'), \n" +
+                "('SC00020024', '44', 'Macedo & Macedo, Lda.'), \n" +
+                "('SC00020028', '17', 'Melisauto, S.A.'), \n" +
+                "('SC00020031', '94', 'Mendes Gomes'), \n" +
+                "('SC02740001', '39', 'Soviauto'), \n" +
+                "('SC00020094', '53', 'Terauto, Lda.'), \n" +
+                "('SC00020100', '28', 'Toitorres, S.A.'), \n" +
+                "('SC00020103', '25', 'Tomeifel') \n" +
+                ")\n" +
+                "SELECT * FROM (\n" +
+                "SELECT '1' as ORDINAL, DEALERS.DEALERCODE AS \"Cód Concessionário\", DEALERS.DEALER AS \"Concessionário\",\"Modelo Testes Form01\", \"diegoprueba339\", \"Total Contratos PASSAGEIROS\", \"DYNA L\", \"Total Contratos TESTESTS\", \"Teste3Passageiros\", \"Total Contratos testNewType\", \"Total Contratos1\", \"Total Vendas\", \"Dif1\", \"Total Contratos2\", \"Total Matrículas\", \"Dif2\"\n" +
+                "FROM DEALERS LEFT OUTER JOIN\n" +
+                "(SELECT\n" +
+                "    PVM.OID_DEALER,\n" +
+                "    SUM(CASE WHEN ID_PVM_CARMODEL = 91 THEN CONTRACTS ELSE NULL END) AS \"Modelo Testes Form01\",\n" +
+                "    SUM(CASE WHEN ID_PVM_CARMODEL = 88 THEN CONTRACTS ELSE NULL END) AS \"diegoprueba339\",\n" +
+                "    SUM(CASE WHEN CM.TYPE = 'PASSAGEIROS' THEN CONTRACTS ELSE NULL END) AS \"Total Contratos PASSAGEIROS\",\n" +
+                "    SUM(CASE WHEN ID_PVM_CARMODEL = 21 THEN CONTRACTS ELSE NULL END) AS \"DYNA L\",\n" +
+                "    SUM(CASE WHEN CM.TYPE = 'TESTESTS' THEN CONTRACTS ELSE NULL END) AS \"Total Contratos TESTESTS\",\n" +
+                "    SUM(CASE WHEN ID_PVM_CARMODEL = 89 THEN CONTRACTS ELSE NULL END) AS \"Teste3Passageiros\",\n" +
+                "    SUM(CASE WHEN CM.TYPE = 'testNewType' THEN CONTRACTS ELSE NULL END) AS \"Total Contratos testNewType\",\n" +
+                "    SUM(CONTRACTS) AS \"Total Contratos1\",\n" +
+                "    SUM(SALES_VALUE) AS \"Total Vendas\",\n" +
+                "    SUM(CONTRACTS - PLATES_VALUE) as \"Dif1\",\n" +
+                "    SUM(CONTRACTS) AS \"Total Contratos2\",\n" +
+                "    SUM(PLATES_VALUE) AS \"Total Matrículas\",\n" +
+                "    SUM(SALES_VALUE - PLATES_VALUE) as \"Dif2\"\n" +
+                "FROM PVM_MONTHLYREPORT AS PVM, PVM_MONTHLYREPORTDETAIL AS DT, PVM_CARMODEL AS CM, DEALERS AS DE\n" +
+                "WHERE\n" +
+                "    PVM.AVAILABLE = 1 AND\n" +
+                "    PVM.YEAR = 2023 AND\n" +
+                "    PVM.MONTH = 5 AND\n" +
+                "    PVM.ID = DT.ID_PVM_MONTHLYREPORT AND\n" +
+                "    DT.ID_PVM_CARMODEL = CM.ID AND\n" +
+                "    PVM.OID_DEALER = DE.OID_DEALER\n" +
+                "    GROUP BY PVM.OID_DEALER) DETAIL ON\n" +
+                "    DEALERS.OID_DEALER = DETAIL.OID_DEALER\n" +
+                ") GRID ORDER BY ORDINAL, \"Concessionário\"";
+    }
 }

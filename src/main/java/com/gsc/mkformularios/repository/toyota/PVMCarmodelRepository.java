@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface PVMCarmodelRepository extends JpaRepository<PVMCarmodel, Integer> {
+public interface PVMCarmodelRepository extends JpaRepository<PVMCarmodel, Integer>, PVMCarmodelRepositoryCustom {
 
     @Query(value = "SELECT PC.* FROM PVM_CARMODEL PC " +
             "WHERE PC.active LIKE 'S' " +

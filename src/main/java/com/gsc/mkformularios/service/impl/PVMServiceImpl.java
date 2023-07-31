@@ -310,9 +310,6 @@ public class PVMServiceImpl implements PVMService {
 
     @Override
     public void getPVMExcelByMonth(PVMRequestDTO pvmRequestDTO, String pvmMonth, UserPrincipal userPrincipal, HttpServletResponse response) {
-        //TODO remove this user init
-        userPrincipal = new UserPrincipal(null, null, null);
-        userPrincipal.setCaMember(false);
         int year	= pvmRequestDTO.getYear();
         int month	= pvmRequestDTO.getMonth();
         String oidNet = StringTasks.cleanString(pvmRequestDTO.getOidNet(), "");

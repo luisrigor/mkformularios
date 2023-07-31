@@ -23,17 +23,22 @@ import com.gsc.mkformularios.sample.data.provider.PVMData;
 import com.gsc.mkformularios.sample.data.provider.SecurityData;
 import com.gsc.mkformularios.security.UserPrincipal;
 import com.gsc.mkformularios.service.impl.PVMServiceImpl;
+import com.gsc.mkformularios.service.impl.pvm.PVM1MonthReport;
+import com.gsc.mkformularios.service.impl.pvm.PVM3MonthReport;
 import com.gsc.mkformularios.utils.DealersUtils;
 import com.gsc.mkformularios.utils.UsrlogonUtil;
 import com.sc.commons.exceptions.SCErrorException;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,11 +68,17 @@ public class PVMServiceImplTest {
     private DealersUtils dealersUtils;
     @Mock
     private UsrlogonUtil usrlogonUtil;
+    @Mock
+    private PVM1MonthReport pvm1MonthReport;
+    @Mock
+    private PVM3MonthReport pvm3MonthReport;
 
     @InjectMocks
     private PVMServiceImpl pvmService;
 
     private SecurityData securityData;
+
+
 
     @BeforeEach
     void setUp() {
@@ -513,5 +524,121 @@ public class PVMServiceImplTest {
 
     }
 
+    @Test
+    void whenGetPVMExcelByMonth1MThenReturnInfo() throws SCErrorException {
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("SC00010001");
+        userPrincipal.setOidDealerParent("1");
+        userPrincipal.setCaMember(false);
+
+        PVMRequestDTO pvmRequestDTO = PVMRequestDTO.builder()
+                .year(2023)
+                .month(6)
+                .oidNet("SC00010001")
+                .build();
+
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        when(pvm1MonthReport.execute(anyInt(), anyInt(), anyString(), anyBoolean())).thenReturn(new HSSFWorkbook());
+
+
+        pvmService.getPVMExcelByMonth(pvmRequestDTO, "1MONTH",userPrincipal, response);
+
+        verify(pvm1MonthReport, times(1)).execute(anyInt(), anyInt(), anyString(), anyBoolean());
+    }
+
+
+    @Test
+    void whenGetPVMExcelByMonth1MLexusThenReturnInfo() throws SCErrorException {
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("SC00010002");
+        userPrincipal.setOidDealerParent("1");
+        userPrincipal.setCaMember(false);
+
+        PVMRequestDTO pvmRequestDTO = PVMRequestDTO.builder()
+                .year(2023)
+                .month(6)
+                .oidNet("SC00010002")
+                .build();
+
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        when(pvm1MonthReport.execute(anyInt(), anyInt(), anyString(), anyBoolean())).thenReturn(new HSSFWorkbook());
+
+
+        pvmService.getPVMExcelByMonth(pvmRequestDTO, "1MONTH",userPrincipal, response);
+
+        verify(pvm1MonthReport, times(1)).execute(anyInt(), anyInt(), anyString(), anyBoolean());
+    }
+
+    @Test
+    void whenGetPVMExcelByMonth3MThenReturnInfo() throws SCErrorException {
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("SC00010001");
+        userPrincipal.setOidDealerParent("1");
+        userPrincipal.setCaMember(false);
+
+        PVMRequestDTO pvmRequestDTO = PVMRequestDTO.builder()
+                .year(2023)
+                .month(6)
+                .oidNet("SC00010001")
+                .build();
+
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        when(pvm3MonthReport.executeForToyota(anyInt(), anyInt(), anyBoolean())).thenReturn(new HSSFWorkbook());
+
+
+        pvmService.getPVMExcelByMonth(pvmRequestDTO, "3MONTH",userPrincipal, response);
+
+        verify(pvm3MonthReport, times(1)).executeForToyota(anyInt(), anyInt(), anyBoolean());
+    }
+
+    @Test
+    void whenGetPVMExcelByMonth3MLexusThenReturnInfo() throws SCErrorException {
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("SC00010002");
+        userPrincipal.setOidDealerParent("1");
+        userPrincipal.setCaMember(false);
+
+        PVMRequestDTO pvmRequestDTO = PVMRequestDTO.builder()
+                .year(2023)
+                .month(6)
+                .oidNet("SC00010002")
+                .build();
+
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        when(pvm3MonthReport.executeForLexus(anyInt(), anyInt(), anyBoolean())).thenReturn(new HSSFWorkbook());
+
+
+        pvmService.getPVMExcelByMonth(pvmRequestDTO, "3MONTH",userPrincipal, response);
+
+        verify(pvm3MonthReport, times(1)).executeForLexus(anyInt(), anyInt(), anyBoolean());
+    }
+
+
+    @Test
+    void whenGetPVMExcelByMonth3MLexusThenThrows() throws SCErrorException {
+        UserPrincipal userPrincipal = securityData.getUserPrincipal();
+        userPrincipal.setOidNet("SC00010002");
+        userPrincipal.setOidDealerParent("1");
+        userPrincipal.setCaMember(false);
+
+        PVMRequestDTO pvmRequestDTO = PVMRequestDTO.builder()
+                .year(2023)
+                .month(6)
+                .oidNet("SC00010002")
+                .build();
+
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        when(pvm3MonthReport.executeForLexus(anyInt(), anyInt(), anyBoolean())).thenThrow(RuntimeException.class);
+
+
+        assertThrows(RuntimeException.class, ()->pvmService.getPVMExcelByMonth(pvmRequestDTO, "3MONTH",userPrincipal, response));
+
+
+    }
 
 }

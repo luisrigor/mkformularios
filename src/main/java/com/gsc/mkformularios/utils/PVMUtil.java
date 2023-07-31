@@ -54,31 +54,6 @@ public class PVMUtil {
 
     }
 
-    public static Vector<String[]> getPVMCarModels(String brand, String year, String month) throws SCErrorException, SQLException {
 
-        Vector<String[]> vecResult = new Vector<String[]>();
-        Connection conn = ServerJDBCConnection.getInstance().getConnection("jdbc/toyxtaps");
-
-
-        month = ("00" + month);
-        month = month.substring(month.length()-2);
-
-        String dtFrom = CalculatePVMDtFrom(year, month);
-
-
-        String SQL = "SELECT * FROM PVM_CARMODEL WHERE DT_FROM <= date('" + dtFrom + "') AND VALUE(DT_TO, date('2100-12-31')) >= CURRENT DATE ORDER BY TYPE, EXPORT_ORDER, NAME";
-//		String SQL = "SELECT * FROM PVM_CARMODEL WHERE DT_FROM <= date('" + dtFrom + "') AND VALUE(DT_TO, date('2100-12-31')) >= date('" + year + "-" + month + "-01') ORDER BY TYPE, EXPORT_ORDER, NAME";
-//        logger.debug("SQL:" + SQL + " year: "+year + " month: "+month + " brand: "+brand);
-        PreparedStatement pstmt = conn.prepareStatement(SQL);
-        ResultSet rs = pstmt.executeQuery();
-        while (rs.next()) {
-            String type = rs.getString("TYPE");
-            String name = rs.getString("NAME");
-            String id = rs.getString("ID");
-            vecResult.addElement(new String[]{type, name, id});
-        }
-        DataBaseTasks.close(rs, pstmt, conn);
-        return vecResult;
-    }
 
 }

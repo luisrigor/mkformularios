@@ -41,8 +41,6 @@ public class ExcelUtils1Month {
     public static Hashtable<Integer, Integer> BUDGET_COLUMNS = null;
 
 
-
-
     public static void initStyles(HSSFWorkbook workBook) {
         SUB_TOTAL_COLUMNS  = new Hashtable<Integer, Integer>();
 
@@ -93,7 +91,7 @@ public class ExcelUtils1Month {
             row = sheet.createRow(rowNumber);
 
         HSSFCell cell = row.createCell(column);
-        if(value!=null&&value.equals("null"))
+        if(value!=null&&!value.equals("null"))
             cell.setCellValue(value);
         if (columnWidth>0)
             sheet.setColumnWidth(column, (short) (columnWidth * 256));
@@ -953,7 +951,7 @@ public class ExcelUtils1Month {
         int auxColumn = currentColumn-1;
         int columnCount = metaData.size();
         String strTotal = "total";
-        for (int i = currentColumn-1; i < columnCount; i++) {
+        for (int i = currentColumn-1; i < columnCount-1; i++) {
             Object header = metaData.get(i + 1);
             String colName = header.toString();
 

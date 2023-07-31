@@ -12,6 +12,7 @@ import com.gsc.mkformularios.utils.ExcelUtils3Month;
 import com.gsc.mkformularios.utils.PVMReportQueries3Month;
 import com.sc.commons.exceptions.SCErrorException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.stereotype.Component;
@@ -19,8 +20,11 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.util.*;
 
+import static com.gsc.mkformularios.constants.DATAConstants.APP_LEXUS;
+import static com.gsc.mkformularios.constants.DATAConstants.APP_TOYOTA;
 import static com.gsc.mkformularios.utils.ExcelUtils3Month.*;
 
+@Log4j
 @Component
 @RequiredArgsConstructor
 public class PVM3MonthReport {
@@ -34,9 +38,9 @@ public class PVM3MonthReport {
     private final PVMMonthlyReportRepository pvmMonthlyReportRepository;
 
     public void setDataSourceContext(Long client){
-        if (client == 2L) {
+        if (client == APP_LEXUS) {
             dbContext.setBranchContext(DbClient.DB_LEXUS);
-        } else if (client == 1L){
+        } else if (client == APP_TOYOTA){
             dbContext.setBranchContext(DbClient.DB_TOYOTA);
         }
     }
@@ -59,7 +63,7 @@ public class PVM3MonthReport {
 
 
 
-    private HSSFWorkbook createExcelWb(String year, String month, String brand, boolean isCAMember) {
+    public HSSFWorkbook createExcelWb(String year, String month, String brand, boolean isCAMember) {
 
         HSSFWorkbook workBook = new HSSFWorkbook();
         HSSFSheet platesSheet = workBook.createSheet("Tot. Matríc.");
@@ -105,11 +109,11 @@ public class PVM3MonthReport {
             ExcelUtils3Month.createSheetTitle(workBook, vdvcSheet , "PREVISÃO DE VEICULOS DE DEMONSTRAÇÃO / CORTESIA - " + ptMonths[Integer.parseInt(month)].toUpperCase());
 
 
-            //TODO change 1L constant for CONSTANT
+
             if (brand.equalsIgnoreCase("Toyota")) {
-                this.setDataSourceContext(1L);
+                this.setDataSourceContext(Long.valueOf(APP_TOYOTA));
             } else if (brand.equalsIgnoreCase("Lexus")) {
-                this.setDataSourceContext(2L);
+                this.setDataSourceContext(Long.valueOf(APP_LEXUS));
             }
 
 //			------ MATRICULAS ----- MATRICULAS ----- MATRICULAS ----- MATRICULAS ----- MATRICULAS ----- MATRICULAS ----- MATRICULAS
@@ -126,12 +130,10 @@ public class PVM3MonthReport {
 //VDVC   -  VDVC   VDVC   -  VDVC   VDVC   -  VDVC   VDVC   -  VDVC   VDVC   -  VDVC   VDVC   -  VDVC   VDVC   -  VDVC   VDVC   -  VDVC   VDVC   -  VDVC   VDVC   -  VDVC
 
 
-        } catch (SCErrorException e) {
-            System.out.println(">>>>>>>>>>" + e.getMessage());
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (SQLException e) {
-            System.out.println(">>>>>>>>>>" + e.getMessage());
         }
+
         return workBook;
     }
 
@@ -195,9 +197,13 @@ public class PVM3MonthReport {
                 }
                 countExecutions ++;
             }
-            platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, countMetadataColumns-5, countMetadataColumns-5));
-            platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, countMetadataColumns-3, countMetadataColumns-3));
-            platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, countMetadataColumns-1, countMetadataColumns-1));
+            try {
+                platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, countMetadataColumns-5, countMetadataColumns-5));
+                platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, countMetadataColumns-3, countMetadataColumns-3));
+                platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, countMetadataColumns-1, countMetadataColumns-1));
+            } catch (Exception e) {
+                log.error("Error merging cell", e);
+            }
 
             //Linha Total
             createPlatesTotalLine(topRow, workBook, platesSheet, currentRow++, metaData.size(), true, false, false );
@@ -252,10 +258,14 @@ public class PVM3MonthReport {
                 }
                 countExecutions ++;
             }
+            try {
+                platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, metaData.size()-5, metaData.size()-5));
+                platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, metaData.size()-3, metaData.size()-3));
+                platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, metaData.size()-1, metaData.size()-1));
+            } catch (Exception e) {
+                log.error("Error merging cell", e);
+            }
 
-            platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, metaData.size()-5, metaData.size()-5));
-            platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, metaData.size()-3, metaData.size()-3));
-            platesSheet.addMergedRegion(new CellRangeAddress(currentRow-2,  currentRow-1, metaData.size()-1, metaData.size()-1));
 
             //Linha Total
             createPlatesTotalLine(topRow, workBook, platesSheet, currentRow++, metaData.size(), true, false, false);

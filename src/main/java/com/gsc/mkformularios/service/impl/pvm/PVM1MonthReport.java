@@ -13,17 +13,13 @@ import com.gsc.mkformularios.utils.ExcelUtils1Month;
 import com.gsc.mkformularios.utils.ExcelUtils3Month;
 import com.gsc.mkformularios.utils.PVMReportQueries1Month;
 import com.gsc.mkformularios.utils.PVMUtil;
-import com.rg.dealer.Dealer;
 import com.sc.commons.exceptions.SCErrorException;
-import com.sc.commons.utils.DataBaseTasks;
 import com.sc.commons.utils.DateTimerTasks;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.stereotype.Component;
@@ -31,10 +27,8 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.util.*;
 
-import static com.gsc.mkformularios.service.impl.pvm.PVMReportStyles.*;
-import static com.gsc.mkformularios.service.impl.pvm.PVMReportStyles.getStyleVariation;
-//import static com.gsc.mkformularios.utils.ExcelUtils.*;
-//import static com.gsc.mkformularios.utils.ExcelUtils.createVDVCTotalLine;
+import static com.gsc.mkformularios.constants.DATAConstants.APP_LEXUS;
+import static com.gsc.mkformularios.constants.DATAConstants.APP_TOYOTA;
 import static com.gsc.mkformularios.utils.ExcelUtils1Month.*;
 import static com.gsc.mkformularios.utils.PVMReportQueries1Month.*;
 
@@ -49,13 +43,12 @@ public class PVM1MonthReport {
     private final PVMCarmodelRepository pvmCarmodelRepository;
     private final PVMMonthlyReportRepository pvmMonthlyReportRepository;
 
-    public static Hashtable<Integer, Integer> SUB_TOTAL_COLUMNS = null;
-    public static Hashtable<Integer, Integer> BUDGET_COLUMNS = null;
+
 
     public void setDataSourceContext(Long client){
-        if (client == 2L) {
+        if (client == APP_LEXUS) {
             dbContext.setBranchContext(DbClient.DB_LEXUS);
-        } else if (client == 1L){
+        } else if (client == APP_TOYOTA){
             dbContext.setBranchContext(DbClient.DB_TOYOTA);
         }
     }
@@ -64,12 +57,11 @@ public class PVM1MonthReport {
         return createExcelWb(String.valueOf(year), String.valueOf(month), brand, isCAMember);
     }
 
-    private HSSFWorkbook createExcelWb(String year, String month, String brand, boolean isCAMember) throws SCErrorException {
-        //TODO change 1L constant for CONSTANT
+    public HSSFWorkbook createExcelWb(String year, String month, String brand, boolean isCAMember) throws SCErrorException {
         if (brand.equalsIgnoreCase("Toyota")) {
-            this.setDataSourceContext(1L);
+            this.setDataSourceContext(Long.valueOf(APP_TOYOTA));
         } else if (brand.equalsIgnoreCase("Lexus")) {
-            this.setDataSourceContext(2L);
+            this.setDataSourceContext(Long.valueOf(APP_LEXUS));
         }
         HSSFWorkbook workBook = new HSSFWorkbook();
         HSSFSheet platesSheet = workBook.createSheet("Tot. Matríc.");
@@ -83,7 +75,6 @@ public class PVM1MonthReport {
         List<Map<String,Object>> rs2 = new ArrayList<>();
         try {
             List<RetailDealerDTO> vecRetailerDealers 	= getRetailerDealers(brand, isCAMember);
-            Vector<String[]> pvmCarModels = PVMUtil.getPVMCarModels(brand, year, month);
             List<String[]> vecPVMCarModel 		= getPVMCarModels(brand, year, month);
             List<PVMCarmodelForecast> vecForecasts 		= new ArrayList<>();
             if(brand.equals("Toyota")){
@@ -114,8 +105,8 @@ public class PVM1MonthReport {
 
             String contractsSql = getContractsSql(vecRetailerDealers, vecPVMCarModel, year, month);
 
-            SUB_TOTAL_COLUMNS  = new Hashtable<Integer, Integer>();
-            BUDGET_COLUMNS = new Hashtable<Integer, Integer>();
+            ExcelUtils1Month.SUB_TOTAL_COLUMNS  = new Hashtable<Integer, Integer>();
+            ExcelUtils1Month.BUDGET_COLUMNS = new Hashtable<Integer, Integer>();
 
             initStyles(workBook);
 
@@ -166,7 +157,7 @@ public class PVM1MonthReport {
                     }
                     lineCount ++;
                 }
-                Iterator<Integer> itBudgets  = BUDGET_COLUMNS.keySet().iterator();
+                Iterator<Integer> itBudgets  = ExcelUtils1Month.BUDGET_COLUMNS.keySet().iterator();
                 while(itBudgets.hasNext()){
                     Integer budgetCol = itBudgets.next();
                     Short budgetColShort = budgetCol.shortValue();
@@ -188,7 +179,7 @@ public class PVM1MonthReport {
             //=========================================================================================================//
 
             //Inicio Constru��o Folha Vendas
-            SUB_TOTAL_COLUMNS  = new Hashtable<Integer, Integer>();
+            ExcelUtils1Month.SUB_TOTAL_COLUMNS  = new Hashtable<Integer, Integer>();
             rs = pvmMonthlyReportRepository.getPVMMonthReportPlates(salesSql);
 
             metaData = new ArrayList<>();
@@ -236,7 +227,7 @@ public class PVM1MonthReport {
 
             if (brand.equalsIgnoreCase("Lexus")) {
                 //Inicio Constru��o Folha Contratos
-                SUB_TOTAL_COLUMNS  = new Hashtable<Integer, Integer>();
+                ExcelUtils1Month.SUB_TOTAL_COLUMNS  = new Hashtable<Integer, Integer>();
 
                 rs = pvmMonthlyReportRepository.getPVMMonthReportPlates(contractsSql);
                 metaData = new ArrayList<>();
@@ -268,7 +259,7 @@ public class PVM1MonthReport {
             //Inicio Constru��o Folha VDVC
 
 
-            SUB_TOTAL_COLUMNS  = new Hashtable<Integer, Integer>();
+            ExcelUtils1Month.SUB_TOTAL_COLUMNS  = new Hashtable<Integer, Integer>();
 
             rs = pvmMonthlyReportRepository.getPVMMonthReportPlates(vdvcSql);
             metaData = new ArrayList<>();
@@ -278,6 +269,7 @@ public class PVM1MonthReport {
             createVDVCSheetSubTitle(vdvcSheet, metaData);
 
             currentRow = 3;
+
             for (Map<String,Object> rsCurrent:rs) {
                 createVDVCLine(vdvcSheet, rsCurrent, currentRow++, metaData.size());
             }
@@ -288,7 +280,7 @@ public class PVM1MonthReport {
             vdvcSheet.setColumnWidth((short)1, (short) (3 * 256));
             vdvcSheet.setColumnWidth((short)2, (short) (40 * 256));
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new SCErrorException("GeneratePVMReport.createExcelWb", e.getMessage(), e);
         }
@@ -308,7 +300,7 @@ public class PVM1MonthReport {
 
     private List<String[]> getPVMCarModels(String brand, String year, String month) throws SQLException {
         if (brand.equalsIgnoreCase("Lexus"))
-            this.setDataSourceContext(2L);
+            this.setDataSourceContext(Long.valueOf(APP_LEXUS));
 
         List<String[]> vecResult = new ArrayList<>();
 
@@ -343,7 +335,7 @@ public class PVM1MonthReport {
         return dtFrom;
     }
 
-    private static Double cellToNumber(HSSFCell value) {
+    public static Double cellToNumber(HSSFCell value) {
 
         if(value.getCellType() == CellType.STRING) {
             return fromStringToDouble(value.getStringCellValue());
@@ -354,7 +346,7 @@ public class PVM1MonthReport {
         }
     }
 
-    private static Double fromStringToDouble(String value){
+    public static Double fromStringToDouble(String value) {
         if (value != null) {
             try {
                 return Double.parseDouble(value.toString());
