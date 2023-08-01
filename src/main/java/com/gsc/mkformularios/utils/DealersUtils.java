@@ -57,7 +57,7 @@ public class DealersUtils {
 
     public static Map<String, Dealer> convertHashDealers(Hashtable<String, Dealer> allDealersByOid) {
 
-        Map<String, Dealer> mapDlrs = new Hashtable<String, Dealer>();
+        Map<String, Dealer> mapDlrs = new HashMap<>();
         Enumeration<Dealer> enumDlrs = allDealersByOid.elements();
         while (enumDlrs.hasMoreElements()) {
             Dealer oDealer = enumDlrs.nextElement();
