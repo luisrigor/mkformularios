@@ -305,9 +305,9 @@ public class PVMServiceImplTest {
         UserPrincipal userPrincipal = securityData.getUserPrincipal();
         userPrincipal.setOidNet("1");
         userPrincipal.setOidDealerParent("1");
-        Boolean success = pvmService.newPVM(userPrincipal, 1);
+        Integer success = pvmService.newPVM(userPrincipal, 1);
 
-        assertTrue(success);
+        assertEquals(success,1);
     }
 
     @Test
@@ -321,9 +321,10 @@ public class PVMServiceImplTest {
         UserPrincipal userPrincipal = securityData.getUserPrincipal();
         userPrincipal.setOidNet("1");
         userPrincipal.setOidDealerParent("1");
-        Boolean success = pvmService.newPVM(userPrincipal, 1);
+        Integer success = pvmService.newPVM(userPrincipal, 1);
 
-        assertFalse(success);
+        assertEquals(success,-1);
+
     }
 
     @Test
