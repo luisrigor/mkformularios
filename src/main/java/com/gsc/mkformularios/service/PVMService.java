@@ -16,7 +16,7 @@ import java.util.List;
 public interface PVMService {
     PVMGetDTO getPVM(PVMRequestDTO pvmRequestDTO, UserPrincipal userPrincipal);
     PVMDetailDTO getPVMDetail(int idPVM, UserPrincipal userPrincipal);
-    Boolean newPVM(UserPrincipal userPrincipal, int subDealer);
+    Integer newPVM(UserPrincipal userPrincipal, int subDealer);
 
     void providePVMToDealer(UserPrincipal userPrincipal,String cancelReasons,int idPVM);
 

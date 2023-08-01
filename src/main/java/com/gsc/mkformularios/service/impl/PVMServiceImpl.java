@@ -143,24 +143,23 @@ public class PVMServiceImpl implements PVMService {
 
 
     @Override
-    public Boolean newPVM(UserPrincipal userPrincipal, int subDealer) {
+    public Integer newPVM(UserPrincipal userPrincipal, int subDealer) {
         this.setDataSourceContext(userPrincipal.getClientId());
-        boolean success;
         try{
             Optional<PVMMonthlyReport> data = pvmMonthlyReportRepository.newPVM(DateTimerTasks.getCurYear(), DateTimerTasks.getCurMonth(), userPrincipal.getOidDealerParent(), subDealer);
             if(data.isPresent()){
                 log.info("PVM j� criado para o m�s actual");
-                success = false;
+                return -1;
             }else{
                 PVMMonthlyReport oPVMMonthlyReport = insertMonthlyReport(userPrincipal, subDealer);
                 pvmMonthlyReportDetailRepository.mergePVMMonthlyReportDetail(oPVMMonthlyReport.getId());
-                success = true;
+
+                return oPVMMonthlyReport.getId();
             }
         }catch (Exception ex) {
             log.error("oGSCUser.getLogin(),PVM,Erro ao criar nova Previs�o de Vendas Mensais" + ex.getMessage());
             throw new CreatePVMException("An error occurred while getting Golden Record Relationships", ex);
         }
-       return success;
     }
 
     @Override

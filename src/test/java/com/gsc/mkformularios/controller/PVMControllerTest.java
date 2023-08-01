@@ -126,7 +126,7 @@ class PVMControllerTest {
         String accessToken = generatedToken;
 
         when(pvmService.newPVM(any(), anyInt()))
-                .thenReturn(true);
+                .thenReturn(1);
 
         mvc.perform(post(BASE_REQUEST_MAPPING+PVMEnpoints.PVM_NEW+"?subDealer=1").header("accessToken", accessToken))
 

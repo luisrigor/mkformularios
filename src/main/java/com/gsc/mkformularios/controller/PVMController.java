@@ -48,11 +48,11 @@ public class PVMController {
     }
 
     @PostMapping(PVMEnpoints.PVM_NEW)
-    public ResponseEntity<String> newPVM(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    public ResponseEntity<Integer> newPVM(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                      @RequestParam int subDealer) {
         log.info("newPVM controller " + userPrincipal.getClientId());
-        PVMService.newPVM(userPrincipal, subDealer);
-        return ResponseEntity.status(HttpStatus.OK).body("pvmDetail");
+        Integer id = PVMService.newPVM(userPrincipal, subDealer);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
     }
 
     @PostMapping(PVMEnpoints.PVM_SAVE_REPORT_DETAIL)
