@@ -69,6 +69,7 @@ public class PVMMonthlyReport {
     @Column(name = "dt_created")
     private LocalDateTime dtCreated;
     private Integer available;
+    @Column(name = "REASON")
     private String reason;
     @Column(name = "sub_dealer")
     private Integer subDealer;
