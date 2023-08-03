@@ -38,6 +38,7 @@ import com.sc.commons.utils.DateTimerTasks;
 import com.sc.commons.utils.StringTasks;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import com.rg.dealer.Dealer;
 import org.springframework.transaction.annotation.Transactional;
@@ -171,7 +172,8 @@ public class PVMServiceImpl implements PVMService {
             PVMMonthlyReport oPVMMonthlyReport = pvmMonthlyReportRepository.findById(idPVM).orElseThrow(()->new GetPVMException("No record with id were found"));
             Dealer oDealer = dealersUtils.getDealerById(userPrincipal.getOidNet(), oPVMMonthlyReport.getOidDealer());
             String reason = oPVMMonthlyReport.getReason();
-            if (!reason.equals(""))
+
+            if (!StringUtils.isEmpty(reason))
                 reason += "\n\n";
 
             oPVMMonthlyReport.setReason(reason + "Pedido de Devolução de PVM\nDe NMSC:\nPara: " + oDealer.getDesig() + "\nData: " + DateTimerTasks.Today() + "\nMotivo: " + cancelReasons + "\n\n");
