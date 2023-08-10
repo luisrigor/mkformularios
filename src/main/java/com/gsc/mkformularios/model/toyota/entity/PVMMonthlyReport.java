@@ -57,21 +57,25 @@ public class PVMMonthlyReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Integer id;
+    @Column(name = "YEAR")
     private Integer year;
+    @Column(name = "MONTH")
     private Integer month;
-    @Column(name = "dt_availability")
+    @Column(name = "DT_AVAILABILITY")
     private LocalDateTime dtAvailability;
-    @Column(name = "oid_dealer")
+    @Column(name = "OID_DEALER")
     private String oidDealer;
-    @Column(name = "created_by")
+    @Column(name = "CREATED_BY")
     private String createdBy;
-    @Column(name = "dt_created")
+    @Column(name = "D_CREATED")
     private LocalDateTime dtCreated;
+    @Column(name = "AVAILABLE")
     private Integer available;
     @Column(name = "REASON")
     private String reason;
-    @Column(name = "sub_dealer")
+    @Column(name = "SUB_DEALER")
     private Integer subDealer;
 
 }
