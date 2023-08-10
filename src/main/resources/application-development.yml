@@ -3,7 +3,7 @@ server:
     context-path: /MKFormularios
     encoding:
       force-response: true
-      charset: utf-8
+      charset: iso-8859-1
 
 
 spring:
