@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -52,7 +53,7 @@ public class BudgetController {
 
         try {
             List<String[]> data = budgetService.downloadBudget(yearBudget, userPrincipal, response);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(response.getOutputStream(), StandardCharsets.ISO_8859_1);
             CSVWriter csvWriter = new CSVWriter(outputStreamWriter,
                     ';',
                     CSVWriter.NO_QUOTE_CHARACTER,

@@ -119,7 +119,7 @@ public class BudgetServiceImpl implements BudgetService {
 
         String[] headers = getHeader(mapTypes);
         String displayFileName = "Orcamento_"+year+".csv";
-        response.setContentType("text/csv;charset=UTF-8");
+        response.setContentType("text/csv;charset="+StandardCharsets.ISO_8859_1);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + displayFileName + "\"");
         try {
