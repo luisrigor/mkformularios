@@ -2,6 +2,7 @@ package com.gsc.mkformularios.controller;
 
 import com.google.gson.Gson;
 import com.gsc.mkformularios.config.SecurityConfig;
+import com.gsc.mkformularios.config.datasource.toyota.DbContext;
 import com.gsc.mkformularios.config.environment.EnvironmentConfig;
 import com.gsc.mkformularios.constants.api.PVMEnpoints;
 import com.gsc.mkformularios.dto.ModelDTO;
@@ -53,6 +54,8 @@ class ModelControllerTest {
     private ServiceLoginRepository serviceLoginRepository;
     @MockBean
     private EnvironmentConfig environmentConfig;
+    @MockBean
+    private DbContext dbContext;
     @MockBean
     private ClientRepository clientRepository;
     private Gson gson;
