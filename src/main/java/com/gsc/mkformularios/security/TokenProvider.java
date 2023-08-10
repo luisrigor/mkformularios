@@ -1,5 +1,7 @@
 package com.gsc.mkformularios.security;
 
+import com.gsc.mkformularios.config.datasource.toyota.DbClient;
+import com.gsc.mkformularios.config.datasource.toyota.DbContext;
 import com.gsc.mkformularios.constants.AppProfile;
 import com.gsc.mkformularios.exceptions.AuthTokenException;
 import com.gsc.mkformularios.model.toyota.entity.LoginKey;
@@ -49,13 +51,24 @@ public class TokenProvider {
     private final ServiceLoginRepository serviceLoginRepository;
     private final LoginKeyRepository loginKeyRepository;
     private final String activeProfile;
+    private final DbContext dbContext;
 
     public TokenProvider(ConfigurationRepository configurationRepository, LoginKeyRepository loginKeyRepository,
-                         ServiceLoginRepository serviceLoginRepository, @Value("${spring.profiles.active}") String activeProfile) {
+                         ServiceLoginRepository serviceLoginRepository, @Value("${spring.profiles.active}") String activeProfile,
+                         DbContext dbContext) {
         this.configurationRepository = configurationRepository;
         this.loginKeyRepository = loginKeyRepository;
         this.serviceLoginRepository = serviceLoginRepository;
         this.activeProfile = activeProfile;
+        this.dbContext = dbContext;
+    }
+
+    public void setDataSourceContext(Long client){
+        if (client == APP_LEXUS) {
+            dbContext.setBranchContext(DbClient.DB_LEXUS);
+        } else if (client == APP_TOYOTA) {
+            dbContext.setBranchContext(DbClient.DB_TOYOTA);
+        }
     }
 
     public String createToken(Authentication authentication, String appId) throws AuthenticationException {
@@ -117,6 +130,7 @@ public class TokenProvider {
     }
 
     public JwtAuthenticationToken validateToken(String authToken) throws AuthenticationException {
+        this.setDataSourceContext(Long.valueOf(APP_TOYOTA));
         if (authToken.contains(":")) {
             return validateServiceToken(authToken);
         }
