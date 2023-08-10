@@ -104,8 +104,13 @@ public class ExcelUtils1Month {
         if(row==null)
             row = sheet.createRow(rowNumber);
         HSSFCell cell = row.createCell(column);
-        String valueD = value==null?"": String.valueOf(value);
-        cell.setCellValue(valueD);
+//        String valueD = value==null?"": String.valueOf(value);
+        if (value==null) {
+            cell.setCellValue("");
+        }  else {
+            cell.setCellValue( value);
+        }
+
         if (columnWidth>0)
             sheet.setColumnWidth(column, (short) (columnWidth * 256));
         return cell;
@@ -243,9 +248,9 @@ public class ExcelUtils1Month {
         if(!rs.isEmpty())
             metadaKeys =  new ArrayList<>(rs.keySet());
 
-        for (int i = 4; i < totalColumns; i++) {
+        for (int i = 4; i <= totalColumns; i++) {
 
-            Integer curValue = fromObjectToInt(rs.get(metadaKeys.get(i)));
+            Integer curValue = fromObjectToInt(rs.get(metadaKeys.get(i-1)));
             int colToPrint = i - 1;
 
             if(colToPrint+1 == totalColumns) {
@@ -272,7 +277,7 @@ public class ExcelUtils1Month {
                 if (compInt.equals(curValue)) {
                     cell = createCell(currentSheet , currentRow, (short)colToPrint, "", (short)-1);
                 } else {
-                    cell = createCell(currentSheet , currentRow, (short)colToPrint, String.valueOf(curValue), (short)-1);
+                    cell = createCell(currentSheet , currentRow, (short)colToPrint, curValue, (short)-1);
                 }
             }
 
@@ -314,7 +319,7 @@ public class ExcelUtils1Month {
         if(!rs.isEmpty())
             metadataKeys =  new ArrayList<>(rs.keySet());
         for (int i = 3; i < totalColumns-1; i++) {
-            Integer curValue = fromObjectToInt(rs.get(metadataKeys.get(i)));
+            Integer curValue = fromObjectToInt(rs.get(metadataKeys.get(i-1)));
             int colToPrint = i - 1;
 
             if(colToPrint == totalColumns-4) {
@@ -339,7 +344,7 @@ public class ExcelUtils1Month {
             } else if (BUDGET_COLUMNS.containsKey(new Integer(i))){
                 cell.setCellStyle(borderStyleCenterBlueDotted);
 
-                if ("0".equals(curValue))
+                if (compInt.equals(curValue))
                     cell.setCellValue(0);
 
                 cellsToColapse.add(cell);
@@ -357,7 +362,7 @@ public class ExcelUtils1Month {
             cell.setCellStyle(styleVariation);
         }
         //TODO validar si se usa
-//        cell = createCell(currentSheet , currentRow, (short)totalColumns, rs.getString(totalColumns), (short)-1);
+        cell = createCell(currentSheet , currentRow, (short)totalColumns, String.valueOf(rs.get(metadataKeys.get(totalColumns-1))), (short)-1);
 
         return cellsToColapse;
     }
@@ -549,9 +554,9 @@ public class ExcelUtils1Month {
         List<String> metadaKeys = new ArrayList<>();
         if(!rs.isEmpty())
             metadaKeys =  new ArrayList<>(rs.keySet());
-        for (int i = 4; i < totalColumns; i++) {
+        for (int i = 4; i <= totalColumns; i++) {
 
-            Integer curValue = fromObjectToInt(rs.get(metadaKeys.get(i)));
+            Integer curValue = fromObjectToInt(rs.get(metadaKeys.get(i-1)));
             int colToPrint = i - 1;
 
             if(colToPrint+1 == totalColumns) {
@@ -568,7 +573,7 @@ public class ExcelUtils1Month {
                 if (compInt.equals(curValue)) {
                     cell = createCell(currentSheet , currentRow, (short)colToPrint, "", (short)-1);
                 } else {
-                    cell = createCell(currentSheet , currentRow, (short)colToPrint, String.valueOf(curValue), (short)-1);
+                    cell = createCell(currentSheet , currentRow, (short)colToPrint, curValue, (short)-1);
                 }
             }
 
@@ -677,7 +682,7 @@ public class ExcelUtils1Month {
             metadataKeys =  new ArrayList<>(rs.keySet());
         for (int i = 4; i <= totalColumns; i++) {
 
-            Integer curValue = fromObjectToInt(rs.get(metadataKeys.get(i)));
+            Integer curValue = fromObjectToInt(rs.get(metadataKeys.get(i-1)));
             int colToPrint = i - 1;
 
             if(colToPrint+1 == totalColumns) {
@@ -723,7 +728,7 @@ public class ExcelUtils1Month {
                 if (curValue==0) {
                     cell = createCell(currentSheet , currentRow, (short)colToPrint, "", (short)-1);
                 } else {
-                    cell = createCell(currentSheet , currentRow, (short)colToPrint, String.valueOf(curValue), (short)-1);
+                    cell = createCell(currentSheet , currentRow, (short)colToPrint, curValue, (short)-1);
                 }
             }
 
