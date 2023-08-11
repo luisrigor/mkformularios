@@ -676,6 +676,7 @@ public class ExcelUtils1Month {
         formulaTotal.append(  "0" );
 
         int leftColumn = 3;
+        Integer compInt = 0;
 
         List<String> metadataKeys = new ArrayList<>();
         if(!rs.isEmpty())
@@ -725,7 +726,7 @@ public class ExcelUtils1Month {
                 cell.setCellFormula(formula);
                 leftColumn = i;
             } else {
-                if (curValue==0) {
+                if (compInt.equals(curValue)) {
                     cell = createCell(currentSheet , currentRow, (short)colToPrint, "", (short)-1);
                 } else {
                     cell = createCell(currentSheet , currentRow, (short)colToPrint, curValue, (short)-1);
@@ -972,7 +973,8 @@ public class ExcelUtils1Month {
                 }
 
                 //Unir C�lulas
-                currentSheet.addMergedRegion(new CellRangeAddress(startRow, startRow, auxColumn + 1, colToPrint));
+                if(colToPrint!=auxColumn+1)
+                    currentSheet.addMergedRegion(new CellRangeAddress(startRow, startRow, auxColumn + 1, colToPrint));
                 cell = createCell(currentSheet, startRow, (short)(auxColumn+1), secondTitle, (short)-1);
                 cell.setCellStyle(styleTitleLevel2);
 

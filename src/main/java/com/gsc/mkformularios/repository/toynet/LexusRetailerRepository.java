@@ -10,7 +10,8 @@ import java.util.List;
 
 public interface LexusRetailerRepository extends JpaRepository<LexusRetailer, String> {
 
-    @Query("SELECT LR.objectId, LR.desig, LR.dealerCode FROM LexusRetailer LR ORDER BY LR.desig")
+    @Query("SELECT NEW com.gsc.mkformularios.dto.RetailDealerDTO(LR.objectId, LR.desig, LR.dealerCode) " +
+            " FROM LexusRetailer LR ORDER BY LR.desig")
     List<RetailDealerDTO> findAllOrderByDesig();
 
     List<LexusRetailer> findAllByObjectIdNotIn(List<String> objectId);

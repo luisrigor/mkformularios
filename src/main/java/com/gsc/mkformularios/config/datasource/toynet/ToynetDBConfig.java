@@ -71,7 +71,7 @@ public class ToynetDBConfig {
 //        log.info("Datasource initialized successfully: jdbc/usrlogon");
     }
 
-    @Bean(name="toyDataSource")
+    @Bean(name="toyDataSource", destroyMethod = "")
     @ConfigurationProperties(prefix = "toyn.datasource")
     DataSource dataSource() throws NamingException {
         log.info("INIT PRIMARY JNDI: " + jndi);

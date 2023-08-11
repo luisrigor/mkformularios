@@ -76,6 +76,11 @@ public class PVM1MonthReport {
         try {
             List<RetailDealerDTO> vecRetailerDealers 	= getRetailerDealers(brand, isCAMember);
             List<String[]> vecPVMCarModel 		= getPVMCarModels(brand, year, month);
+            if (brand.equalsIgnoreCase("Toyota")) {
+                this.setDataSourceContext(Long.valueOf(APP_TOYOTA));
+            } else if (brand.equalsIgnoreCase("Lexus")) {
+                this.setDataSourceContext(Long.valueOf(APP_LEXUS));
+            }
             List<PVMCarmodelForecast> vecForecasts 		= new ArrayList<>();
             if(brand.equals("Toyota")){
                 String dtFrom = CalculatePVMDtFrom(year, month);
@@ -288,6 +293,7 @@ public class PVM1MonthReport {
     }
 
     private List<RetailDealerDTO> getRetailerDealers(String brand, boolean isCAMember) throws SCErrorException, SQLException {
+        this.setDataSourceContext(Long.valueOf(APP_TOYOTA));
         if(isCAMember && brand.equalsIgnoreCase("Toyota")) {
             return toyotaRetailerRepository.findAllOrderByDesigCaMember();
         } else if (brand.equalsIgnoreCase("Toyota")) {

@@ -69,7 +69,7 @@ public class PVMMonthlyReport {
     private String oidDealer;
     @Column(name = "CREATED_BY")
     private String createdBy;
-    @Column(name = "D_CREATED")
+    @Column(name = "DT_CREATED")
     private LocalDateTime dtCreated;
     @Column(name = "AVAILABLE")
     private Integer available;
