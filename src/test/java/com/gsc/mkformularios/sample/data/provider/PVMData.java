@@ -124,7 +124,7 @@ public class PVMData {
                 .objectId("1")
                 .cp4(1)
                 .cp3(1)
-                .cpExt("1")
+                .cpext("1")
                 .changedBy("user")
                 .comercialName("1")
                 .build();
