@@ -12,7 +12,10 @@ import com.gsc.mkformularios.repository.toyota.PVMCarModelYearForecastRepository
 import com.gsc.mkformularios.repository.toyota.PVMCarmodelRepository;
 import com.gsc.mkformularios.security.UserPrincipal;
 import com.gsc.mkformularios.service.PlanService;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.rg.dealer.Dealer;
 import com.sc.commons.utils.StringTasks;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -73,8 +77,9 @@ public class PlanServiceImpl implements PlanService {
 
         int year =  StringTasks.cleanInteger(yearPlanUpload,0);
 
-        try(Reader reader = new BufferedReader(new InputStreamReader((file.getInputStream())))) {
-            CSVReader csvReader = new CSVReader(reader);
+        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.ISO_8859_1))) {
+            CSVParser csvParser = new CSVParserBuilder().withSeparator(';').build();
+            CSVReader csvReader = new CSVReaderBuilder(reader).withCSVParser(csvParser).build();
             List<String[]> rows = csvReader.readAll();
             Map<String, List<PVMCarModelYearForecast>> result = new HashMap<>();
             for (String[] currentRow : rows.subList(1, rows.size())) {

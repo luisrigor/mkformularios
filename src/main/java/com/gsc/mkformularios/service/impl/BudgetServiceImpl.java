@@ -119,7 +119,7 @@ public class BudgetServiceImpl implements BudgetService {
 
         String[] headers = getHeader(mapTypes);
         String displayFileName = "Orcamento_"+year+".csv";
-        response.setContentType("text/csv;charset="+StandardCharsets.ISO_8859_1);
+        response.setContentType("text/csv;charset="+StandardCharsets.UTF_8);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + displayFileName + "\"");
         try {
@@ -171,7 +171,7 @@ public class BudgetServiceImpl implements BudgetService {
         int year = StringTasks.cleanInteger(yearBudget,0);
 
 
-        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
+        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.ISO_8859_1))) {
             CSVParser csvParser = new CSVParserBuilder().withSeparator(';').build();
             CSVReader csvReader = new CSVReaderBuilder(reader).withCSVParser(csvParser).build();
             List<String[]> rows = csvReader.readAll();
