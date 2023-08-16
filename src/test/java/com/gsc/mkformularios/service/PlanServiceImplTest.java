@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Vector;
 
@@ -136,8 +137,8 @@ public class PlanServiceImplTest {
         userPrincipal.setOidDealerParent("1");
 
         byte[] fileData = (
-                "21,DYNA L,5,4,5,5,0,0,0,0,0,0,0,0 \n" +
-                        "97,JUAN,0,0,0,0,5,0,0,0,0,0,0,0 \n").getBytes();
+                        "21;DYNA L;5;4;5;5;0;0;0;0;0;0;0;0 \n" +
+                        "97;JUAN;0;0;0;0;5;0;0;0;0;0;0;0 \n").getBytes(StandardCharsets.ISO_8859_1);
         InputStream inputStream = new ByteArrayInputStream(fileData);
         MockMultipartFile file = new MockMultipartFile("file", "test.csv",
                 "text/csv", inputStream);

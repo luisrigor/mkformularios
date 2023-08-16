@@ -247,7 +247,7 @@ public class BudgetServiceImplTest {
                         "=42;1;0;0;0;0 \n" +
                         "=22;1;0;0;0;0 \n" +
                         "=75;1;0;0;0;0 \n"
-                ).getBytes(StandardCharsets.UTF_8);
+                ).getBytes(StandardCharsets.ISO_8859_1);
         InputStream inputStream = new ByteArrayInputStream(fileData);
         MockMultipartFile file = new MockMultipartFile("file", "test.csv",
                 "text/csv", inputStream);
