@@ -194,13 +194,13 @@ public class PVMServiceImpl implements PVMService {
     @Transactional
     @Override
     public void saveReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS) {
-        this.setDataSourceContext(userPrincipal.getClientId());
+//        this.setDataSourceContext(userPrincipal.getClientId());
         int idPVM = StringTasks.cleanInteger(idPVMS, -1);
         String userStamp = userPrincipal.getUsername().split("\\|\\|")[0]+"||"+userPrincipal.getUsername().split("\\|\\|")[1];
 
         try {
             for (ReportDetailRequestDto currentReportDetail: reportDetailRequestDto) {
-                this.updateReportDetail(currentReportDetail, userStamp, idPVM);
+                this.updateReportDetail(currentReportDetail, userStamp, idPVM, userPrincipal.getClientId());
             }
         } catch (Exception e) {
             log.error("Error saving monthly sales forecasts", e);
@@ -211,13 +211,13 @@ public class PVMServiceImpl implements PVMService {
     @Transactional
     @Override
     public void sendReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS) {
-        this.setDataSourceContext(userPrincipal.getClientId());
+//        this.setDataSourceContext(userPrincipal.getClientId());
         int idPVM = StringTasks.cleanInteger(idPVMS, -1);
         String userStamp = userPrincipal.getUsername().split("\\|\\|")[0]+"||"+userPrincipal.getUsername().split("\\|\\|")[1];
 
         try {
             for (ReportDetailRequestDto currentReportDetail: reportDetailRequestDto) {
-                this.updateReportDetail(currentReportDetail, userStamp, idPVM);
+                this.updateReportDetail(currentReportDetail, userStamp, idPVM, userPrincipal.getClientId());
             }
             Optional<PVMMonthlyReport> monthlyReport = pvmMonthlyReportRepository.findById(idPVM);
             if(monthlyReport.isPresent()) {
@@ -272,7 +272,8 @@ public class PVMServiceImpl implements PVMService {
     }
 
     @Transactional
-    public void updateReportDetail(ReportDetailRequestDto currentReportDetail, String userStamp, Integer idPVM) {
+    public void updateReportDetail(ReportDetailRequestDto currentReportDetail, String userStamp, Integer idPVM, Long clientId) {
+
         int idModel = currentReportDetail.getIdModel();
         int contract = StringTasks.cleanInteger(currentReportDetail.getContract(),0);
         int sales1 = StringTasks.cleanInteger(currentReportDetail.getS1(),0);

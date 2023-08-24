@@ -2,6 +2,8 @@ package com.gsc.mkformularios.controller;
 
 
 import com.google.gson.Gson;
+import com.gsc.mkformularios.config.datasource.toyota.DbClient;
+import com.gsc.mkformularios.config.datasource.toyota.DbContext;
 import com.gsc.mkformularios.constants.api.PVMEnpoints;
 import com.gsc.mkformularios.dto.*;
 import com.gsc.mkformularios.security.UserPrincipal;
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import static com.gsc.mkformularios.constants.DATAConstants.APP_LEXUS;
+import static com.gsc.mkformularios.constants.DATAConstants.APP_TOYOTA;
+
 @RequiredArgsConstructor
 @Log4j
 @RequestMapping("${app.baseUrl}" + PVMEnpoints.PVM_BASE)
@@ -28,6 +33,17 @@ public class PVMController {
 
     private final PVMService PVMService;
     private final String SAVED = "saved";
+
+    private final DbContext dbContext;
+
+    public void setDataSourceContext(Long client){
+        if (client == APP_LEXUS) {
+            dbContext.setBranchContext(DbClient.DB_LEXUS);
+        } else if (client == APP_TOYOTA) {
+            dbContext.setBranchContext(DbClient.DB_TOYOTA);
+        }
+    }
+
 
     @PostMapping(PVMEnpoints.PVM_GOTO_PVM)
     public ResponseEntity<?> getPVM(@AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -59,6 +75,8 @@ public class PVMController {
     public ResponseEntity<String> saveReportDetail(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                    @RequestBody List<ReportDetailRequestDto> reportDetailList, @RequestParam String idPVMS) {
         log.info("saveReportDetail controller " + userPrincipal.getClientId());
+        this.setDataSourceContext(userPrincipal.getClientId());
+
         PVMService.saveReportDetail(userPrincipal, reportDetailList, idPVMS);
         return ResponseEntity.status(HttpStatus.OK).body(SAVED);
     }
@@ -83,6 +101,8 @@ public class PVMController {
     public ResponseEntity<String> sendReportDetail(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                    @RequestBody List<ReportDetailRequestDto> reportDetailList, @RequestParam String idPVMS) {
         log.info("sendReportDetail controller " + userPrincipal.getClientId());
+        this.setDataSourceContext(userPrincipal.getClientId());
+
         PVMService.sendReportDetail(userPrincipal, reportDetailList, idPVMS);
         return ResponseEntity.status(HttpStatus.OK).body(SAVED);
     }
