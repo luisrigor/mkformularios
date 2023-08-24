@@ -24,7 +24,6 @@ public class PVMCarmodelRepositoryCustomImpl implements PVMCarmodelRepositoryCus
                 "WHERE PC.active LIKE 'S' " +
                 "AND CURRENT DATE BETWEEN PC.DT_FROM AND VALUE( PC.DT_TO, '9999-12-31') " +
                 " GROUP BY TYPE ORDER BY ID") ;
-
         Query query = em.createNativeQuery(sql.toString(), "GetCarTypesMapping");
 
         List<MapTypesDTO> typesDTO = query.getResultList();
