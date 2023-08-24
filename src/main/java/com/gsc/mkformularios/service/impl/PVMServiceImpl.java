@@ -194,7 +194,6 @@ public class PVMServiceImpl implements PVMService {
     @Transactional
     @Override
     public void saveReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS) {
-//        this.setDataSourceContext(userPrincipal.getClientId());
         int idPVM = StringTasks.cleanInteger(idPVMS, -1);
         String userStamp = userPrincipal.getUsername().split("\\|\\|")[0]+"||"+userPrincipal.getUsername().split("\\|\\|")[1];
 
@@ -211,7 +210,6 @@ public class PVMServiceImpl implements PVMService {
     @Transactional
     @Override
     public void sendReportDetail(UserPrincipal userPrincipal, List<ReportDetailRequestDto> reportDetailRequestDto, String idPVMS) {
-//        this.setDataSourceContext(userPrincipal.getClientId());
         int idPVM = StringTasks.cleanInteger(idPVMS, -1);
         String userStamp = userPrincipal.getUsername().split("\\|\\|")[0]+"||"+userPrincipal.getUsername().split("\\|\\|")[1];
 
