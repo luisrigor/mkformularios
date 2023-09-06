@@ -340,8 +340,10 @@ public class PVMServiceImpl implements PVMService {
             }
 
             ServletOutputStream outputStream = response.getOutputStream();
-            oHSSFWorkbook.write(outputStream);
-            oHSSFWorkbook.close();
+            if (oHSSFWorkbook!=null) {
+                oHSSFWorkbook.write(outputStream);
+                oHSSFWorkbook.close();
+            }
             outputStream.close();
 
         } catch (Exception e) {
